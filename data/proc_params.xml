@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<opencv_storage>
+
+<!-- Global parameters: -->
+<!-- Debug type -->
+<debug_type>1</debug_type>
+<!-- Error type -->
+<err_type>0</err_type>
+<!-- Enemy color -->
+<enemy_color>1</enemy_color>
+
+<!-- Armor parameters: -->
+<!-- Red color HSV range. -->
+<red_h_l1>0</red_h_l1>
+<red_h_h1>10</red_h_h1>
+<red_s_l1>43</red_s_l1>
+<red_s_h1>255</red_s_h1>
+<red_v_l1>46</red_v_l1>
+<red_v_h1>255</red_v_h1>
+<red_h_l2>156</red_h_l2>
+<red_h_h2>180</red_h_h2>
+<red_s_l2>43</red_s_l2>
+<red_s_h2>255</red_s_h2>
+<red_v_l2>46</red_v_l2>
+<red_v_h2>255</red_v_h2>
+<!-- Blue color HSV range. -->
+<blue_h_l1>100</blue_h_l1>
+<blue_h_h1>124</blue_h_h1>
+<blue_s_l1>43</blue_s_l1>
+<blue_s_h1>255</blue_s_h1>
+<blue_v_l1>46</blue_v_l1>
+<blue_v_h1>255</blue_v_h1>
+<!-- GaussianBlur core size -->
+<gauss_blur_coresize>3</gauss_blur_coresize>
+<!-- Open and close operating core size -->
+<oc_oprt_coresize>3</oc_oprt_coresize>
+<!-- Based on lightbar's length to filter lightbars -->
+<lightbar_length_min>2.0</lightbar_length_min>
+<!-- Based on lightbar's length and width's ratio to filter -->
+<lightbar_length_ratio>2.0</lightbar_length_ratio>
+<!-- Based on lightbar's slope to filter -->
+<lightbar_slope_min>2.0</lightbar_slope_min>
+
+
+</opencv_storage>
