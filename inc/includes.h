@@ -13,4 +13,7 @@
 #define ENEMY_BLUE  0
 
 
+//#define POINT_SORT_BY_X(A, B)   ()
+
+
 #endif // INCLUDES_H

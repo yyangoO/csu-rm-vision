@@ -6,6 +6,8 @@
  */
 
 
+#include "math.h"
+
 #include "inc/includes.h"
 #include "inc/armor_monocular.h"
 #include "inc/parameters.h"
@@ -60,6 +62,7 @@ void ArmorMono::fill_hole(Mat &in_img, Mat &out_img)
     Mat cut_img;
     Size size = org_img.size();
     Mat temp = Mat::zeros(size.height + 2, size.width + 2, org_img.type()); // Make image bigger.
+
     org_img.copyTo(temp(Range(1, size.height + 1), Range(1, size.width + 1)));
     floodFill(temp, Point(0, 0), Scalar(255));
     temp(Range(1, size.height + 1), Range(1, size.width + 1)).copyTo(cut_img);
@@ -70,16 +73,19 @@ void ArmorMono::fill_hole(Mat &in_img, Mat &out_img)
 // Input image: Bin; Output image: RGB.
 void ArmorMono::find_lightbar(Mat &in_img, Params params)
 {
-#define ARMOR_MONO_LIGHTBAR_DEBUG
+//#define ARMOR_MONO_LIGHTBAR_DEBUG
 
     Mat org_img = in_img;
+#ifdef ARMOR_MONO_LIGHTBAR_DEBUG
     Mat lightbar_debug_mat = Mat(in_img.rows, in_img.cols, CV_8UC3, Scalar(0, 0, 0));
+#endif
     LightBar_t lightbar_temp = {};
     vector<vector<Point>> contours;
     vector<Vec4i> hierachy;
     Point2f rect_p[4], rect_mid_p[4], final_mid_p[2];
     Point2f lightbar_mid_p;
-    float slope = 0;
+    Point2f sort_temp_point;
+    float slope = 0, angle = 0;
     float length[2], mid_length[2], length_ratio = 0;
 
     findContours(org_img, contours, hierachy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
@@ -139,7 +145,8 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                 // Based on the slope of lightbar to filter.
                 slope = (float)((final_mid_p[0].y - final_mid_p[1].y) / \
                                 (final_mid_p[0].x - final_mid_p[1].x + 0.000001));
-                if((slope > params.lightbar_slope_min) || (slope < (-params.lightbar_slope_min)))
+                angle = atan(slope);
+                if(abs(angle) > params.lightbar_angle_min)
                 {
                     // Finally we get the almost right lightbar's information.
                     lightbar_mid_p.x = (final_mid_p[0].x + final_mid_p[1].x) / 2;
@@ -147,8 +154,8 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                     lightbar_temp.p[0] = (Point)final_mid_p[0];
                     lightbar_temp.p[1] = (Point)final_mid_p[1];
                     lightbar_temp.mid_p = (Point)lightbar_mid_p;
-                    lightbar_temp.slope = slope;
-                    if(lightbar_temp.slope < 0)
+                    lightbar_temp.angle = angle;
+                    if(lightbar_temp.angle < 0)
                     {
                         lightbar_temp.apex_p[0].x = abs(abs(final_mid_p[0].x - \
                                                             final_mid_p[1].x) - \
@@ -162,6 +169,12 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                         lightbar_temp.apex_p[0].y = abs(abs(final_mid_p[0].y - \
                                                             final_mid_p[1].y) + \
                                                             lightbar_mid_p.y);
+                        if(lightbar_temp.apex_p[0].x > lightbar_temp.apex_p[1].x)
+                        {
+                            sort_temp_point = lightbar_temp.apex_p[0];
+                            lightbar_temp.apex_p[0] = lightbar_temp.apex_p[1];
+                            lightbar_temp.apex_p[1] = sort_temp_point;
+                        }
                     }
                     else
                     {
@@ -177,6 +190,12 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                         lightbar_temp.apex_p[1].y = abs(abs(final_mid_p[0].y - \
                                                             final_mid_p[1].y) + \
                                                             lightbar_mid_p.y);
+                        if(lightbar_temp.apex_p[0].x > lightbar_temp.apex_p[1].x)
+                        {
+                            sort_temp_point = lightbar_temp.apex_p[0];
+                            lightbar_temp.apex_p[0] = lightbar_temp.apex_p[1];
+                            lightbar_temp.apex_p[1] = sort_temp_point;
+                        }
                     }
                     light_bars.push_back(lightbar_temp);
                 }
@@ -201,7 +220,7 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
             circle(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).mid_p, \
                    3, Scalar(255, 255,255), -1);
             cout << "No." << lightbar_debug_idx << ": ";
-            cout << "Slope: " << light_bars.at(lightbar_debug_idx).slope;
+            cout << "Angle: " << light_bars.at(lightbar_debug_idx).angle;
             cout << "Length: " << light_bars.at(lightbar_debug_idx).length << endl;
         }
         imshow("debug", lightbar_debug_mat);
@@ -214,23 +233,59 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
 // Input image: Bin(coutours); Output image: RGB.
 void ArmorMono::find_armor(Params params)
 {
-//    ArmorROI_t armor_roi_temp = {};
-//    for(int lb_idx = 0; lb_idx < light_bars.size(); lb_idx++)
-//    {
-//        for(int lb_idx_idx = lb_idx + 1; lb_idx_idx < light_bars.size(); lb_idx_idx++)
-//        // First based on the angle of lightbars' different to match them.
-//        if(abs(light_bars.at(lb_idx) - light_bars.at(lb_idx_idx)) < params.armor_slope_diff_min)
-//        {
-//            // Then based on the length different to match them. (length > 0)
-//            if((light_bars.at(lb_idx).length / light_bars.at(lb_idx_idx))    \
-//                                    < (1 + params.armor_length_diff_min)  || \
-//                (light_bars.at(lb_idx).length / lightbars.at(lb_idx_idx))    \
-//                                    > (1 - params.armor_length_diff_min))
-//            {
-                
-//            }
-//        }
-//    }
+#define ARMOR_MONO_ARMOR_DEBUG
+
+    ArmorROI_t armor_roi_temp = {};
+#ifdef ARMOR_MONO_ARMOR_DEBUG
+    Mat armor_debug_mat = Mat(720, 1280, CV_8UC3, Scalar(0, 0, 0));
+#endif
+    for(size_t lb_idx = 0; lb_idx < light_bars.size(); lb_idx++)
+    {
+        for(size_t lb_idx_idx = lb_idx + 1; lb_idx_idx < light_bars.size(); lb_idx_idx++)
+        {
+            // First based on the angle of lightbars' different to match them.
+//            if(abs(light_bars.at(lb_idx).angle - light_bars.at(lb_idx_idx).angle) < params.armor_angle_diff_min)
+            {
+                // Then based on the length different to match them. (length > 0)
+//                if((light_bars.at(lb_idx).length / light_bars.at(lb_idx_idx).length)    \
+                                        < (1 + params.armor_length_retio_min)        || \
+                    (light_bars.at(lb_idx).length / light_bars.at(lb_idx_idx).length)    \
+                                        > (1 - params.armor_length_retio_min))
+                {
+                    // Finally we have these armors.
+                    armor_roi_temp.apex_point[0] = light_bars.at(lb_idx).apex_p[0];
+                    armor_roi_temp.apex_point[1] = light_bars.at(lb_idx).apex_p[1];
+                    armor_roi_temp.apex_point[2] = light_bars.at(lb_idx_idx).apex_p[1];
+                    armor_roi_temp.apex_point[3] = light_bars.at(lb_idx_idx).apex_p[0];
+                    armor_roi_temp.center.x = (light_bars.at(lb_idx).mid_p.x + \
+                                               light_bars.at(lb_idx_idx).mid_p.x) / 2;
+                    armor_roi_temp.center.y = (light_bars.at(lb_idx).mid_p.y + \
+                                               light_bars.at(lb_idx_idx).mid_p.y) / 2;
+
+                    armors.push_back(armor_roi_temp);
+                }
+            }
+        }
+    }
+
+#ifdef ARMOR_MONO_ARMOR_DEBUG
+    cout << "-----------------------------------------" << endl;
+    cout << "                lightbar                 " << endl;
+    for(size_t armor_idx = 0; armor_idx < armors.size(); armor_idx++)
+    {
+        for(size_t apex_idx = 0; apex_idx < 4; apex_idx++)
+        {
+            line(armor_debug_mat, armors.at(armor_idx).apex_point[apex_idx], \
+                 armors.at(armor_idx).apex_point[(apex_idx + 1) % 4], \
+                 Scalar(0, 0, 255), 1);
+            circle(armor_debug_mat, armors.at(armor_idx).center, \
+                   5, Scalar(255, 255,255), -1);
+        }
+    }
+    cout << armors.size() << endl;
+    cout << "-----------------------------------------" << endl;
+    imshow("debug", armor_debug_mat);
+#endif
 }
 
 // Clear vectors.
@@ -244,6 +299,7 @@ void ArmorMono::vector_clear(void)
 void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
 {
     vector_clear();
+//    range_cut(in_img, in_img);
     hsv_proc(in_img, in_img, params);
     fill_hole(in_img, in_img);
     GaussianBlur(in_img, in_img, Size(params.gauss_blur_coresize, params.gauss_blur_coresize), 0);
@@ -252,4 +308,5 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
     erode(in_img, in_img, oc_element);
     dilate(in_img, in_img, oc_element);
     find_lightbar(in_img, params);
+    find_armor(params);
 }

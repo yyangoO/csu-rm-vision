@@ -57,10 +57,10 @@ public:
 
     float lightbar_length_min;    // Based on this to filter lightbars.
     float lightbar_length_ratio;  // Based on this to filter lightbars.
-    float lightbar_slope_min;     // Based on this to filter lightbars.
+    float lightbar_angle_min;     // Based on this to filter lightbars.
 
-    float armor_slope_diff_min;   // Based on this to match lightbars.
-    float armor_length_diff_min;  // Based on this to match lightbars.
+    float armor_angle_diff_min;   // Based on this to match lightbars.
+    float armor_length_retio_min;  // Based on this to match lightbars.
 
 private:
     const std::string proc_params_xml_dir = \

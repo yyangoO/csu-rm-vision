@@ -46,10 +46,10 @@ void Params::params_xml_read(void)
     fs["oc_oprt_coresize"] >> oc_oprt_coresize;
     fs["lightbar_length_min"] >> lightbar_length_min;
     fs["lightbar_length_retio"] >> lightbar_length_ratio;
-    fs["lightbar_slope_min"] >> lightbar_slope_min;
+    fs["lightbar_angle_min"] >> lightbar_angle_min;
+    fs["armor_angle_diff_min"] >> armor_angle_diff_min;
+    fs["armor_length_retio_min"] >> armor_length_retio_min;
     fs.release();
-//    FileStorage fs(cam_params_xml_dir, FileStorage::READ);
-//    fs[""]
 }
 
 

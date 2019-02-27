@@ -39,7 +39,11 @@
 <!-- Based on lightbar's length and width's ratio to filter -->
 <lightbar_length_ratio>2.0</lightbar_length_ratio>
 <!-- Based on lightbar's slope to filter -->
-<lightbar_slope_min>2.0</lightbar_slope_min>
+<lightbar_angle_min>0.785</lightbar_angle_min>
+<!-- Based on lightbar's angle different to pair them -->
+<armor_angle_diff_min>0.3925</armor_angle_diff_min>
+<!-- Based on lightbar's length retio to pair them -->
+<armor_length_retio_min>0.2</armor_length_retio_min>
 
 
 </opencv_storage>
