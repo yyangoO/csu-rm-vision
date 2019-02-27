@@ -136,14 +136,10 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                     final_mid_p[0] = rect_mid_p[1];
                     final_mid_p[1] = rect_mid_p[3];
                 }
-#ifdef ARMOR_MONO_LIGHTBAR_DEBUG
-            line(lightbar_debug_mat, final_mid_p[0], final_mid_p[1], \
-                 Scalar(0, 255, 0), 1);
-#endif
                 // Based on the slope of lightbar to filter.
                 slope = (float)((final_mid_p[0].y - final_mid_p[1].y) / \
                                 (final_mid_p[0].x - final_mid_p[1].x + 0.000001));
-                if((slope > params.lightbar_slope_min) || (slope < -params.lightbar_slope_min))
+//                if((slope > params.lightbar_slope_min) || (slope < (-params.lightbar_slope_min)))
                 {
                     // Finally we get the almost right lightbar's information.
                     lightbar_mid_p.x = (final_mid_p[0].x + final_mid_p[1].x) / 2;
@@ -189,22 +185,27 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
     }
 
 #ifdef ARMOR_MONO_LIGHTBAR_DEBUG
-        string debug_lightbar_num = " No.";
+        cout << "-----------------------------------------" << endl;
+        cout << "                lightbar                 " << endl;
         for(size_t lightbar_debug_idx = 0; lightbar_debug_idx < light_bars.size(); lightbar_debug_idx++)
         {
+            string debug_lightbar_num = " No.";
             debug_lightbar_num = debug_lightbar_num + to_string((int)lightbar_debug_idx);
 
             line(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).p[0], \
                  light_bars.at(lightbar_debug_idx).p[1], Scalar(255, 0, 0), 2);
             putText(lightbar_debug_mat, debug_lightbar_num, light_bars.at(lightbar_debug_idx).p[0], \
-                    0.4, 0.25, Scalar(255, 255, 255), 1);
+                    2, 0.5, Scalar(255, 255, 255), 1);
             line(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).apex_p[0], \
                  light_bars.at(lightbar_debug_idx).apex_p[1], Scalar(0, 255, 0), 1);
             circle(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).mid_p, \
                    3, Scalar(255, 255,255), -1);
+            cout << "No." << lightbar_debug_idx << ": ";
+            cout << "Slope: " << light_bars.at(lightbar_debug_idx).slope;
+            cout << "Length: " << light_bars.at(lightbar_debug_idx).length << endl;
         }
         imshow("debug", lightbar_debug_mat);
-        cout /*<< light_bars.size() */<< endl;
+        cout << "-----------------------------------------" << endl;
 #endif
 }
 
