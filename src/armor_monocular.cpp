@@ -120,11 +120,11 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                     rect_mid_p[rect_mid_p_idx].y = (rect_p[rect_mid_p_idx].y + \
                                                     rect_p[(rect_mid_p_idx + 1) % 4].y) / 2;
                 }
-                mid_length[0] = powf(rect_mid_p[0].x + rect_mid_p[2].x, 2) + \
-                                powf(rect_mid_p[0].y + rect_mid_p[2].y, 2);
+                mid_length[0] = powf((rect_mid_p[0].x - rect_mid_p[2].x), 2) + \
+                                powf((rect_mid_p[0].y - rect_mid_p[2].y), 2);
                 mid_length[0] = sqrtf(mid_length[0]);
-                mid_length[1] = powf(rect_mid_p[1].x + rect_mid_p[3].x, 2) + \
-                                powf(rect_mid_p[1].y + rect_mid_p[3].y, 2);
+                mid_length[1] = powf((rect_mid_p[1].x - rect_mid_p[3].x), 2) + \
+                                powf((rect_mid_p[1].y - rect_mid_p[3].y), 2);
                 mid_length[1] = sqrtf(mid_length[1]);
                 if(mid_length[0] > mid_length[1])
                 {
@@ -139,7 +139,7 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                 // Based on the slope of lightbar to filter.
                 slope = (float)((final_mid_p[0].y - final_mid_p[1].y) / \
                                 (final_mid_p[0].x - final_mid_p[1].x + 0.000001));
-//                if((slope > params.lightbar_slope_min) || (slope < (-params.lightbar_slope_min)))
+                if((slope > params.lightbar_slope_min) || (slope < (-params.lightbar_slope_min)))
                 {
                     // Finally we get the almost right lightbar's information.
                     lightbar_mid_p.x = (final_mid_p[0].x + final_mid_p[1].x) / 2;
