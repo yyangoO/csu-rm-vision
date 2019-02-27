@@ -37,11 +37,11 @@ public:
 private:
     cv::Point last_center;
     struct LightBar_t {
-        cv::Point p[2];
-        cv::Point apex_p[2];
-        cv::Point mid_p;
+        cv::Point p[2];         // Light bar, describe as two points.
+        cv::Point apex_p[2];    // Armor upright line, describe as two points.
+        cv::Point mid_p;        // Light bar's middle point.
         float slope;
-        float length;
+        float length;           // Pixel unit.
     };
     std::vector<LightBar_t> light_bars;
     cv::Mat oc_element;

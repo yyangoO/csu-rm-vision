@@ -70,7 +70,10 @@ void ArmorMono::fill_hole(Mat &in_img, Mat &out_img)
 // Input image: Bin; Output image: RGB.
 void ArmorMono::find_lightbar(Mat &in_img, Params params)
 {
+#define ARMOR_MONO_LIGHTBAR_DEBUG
+
     Mat org_img = in_img;
+    Mat lightbar_debug_mat = Mat(in_img.rows, in_img.cols, CV_8UC3, Scalar(0, 0, 0));
     LightBar_t lightbar_temp = {};
     vector<vector<Point>> contours;
     vector<Vec4i> hierachy;
@@ -88,6 +91,14 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
         length[0] = sqrtf(length[0]);
         length[1] = powf((rect_p[1].x - rect_p[2].x), 2) + powf((rect_p[1].y - rect_p[2].y), 2);
         length[1] = sqrtf(length[1]);
+
+#ifdef ARMOR_MONO_LIGHTBAR_DEBUG
+        for(size_t rect_idx = 0; rect_idx < 4; rect_idx++)
+        {
+            line(lightbar_debug_mat, rect_p[rect_idx], rect_p[(rect_idx + 1) % 4], \
+                 Scalar(0, 255, 0), 1);
+        }
+#endif
         // Based on the length to filter.
         if((length[0] > params.lightbar_length_min) || (length[1] > params.lightbar_length_min))
         {
@@ -102,7 +113,7 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
             }
             if(length_ratio > params.lightbar_length_ratio)
             {
-                for(size_t rect_mid_p_idx; rect_mid_p_idx < 4; rect_mid_p_idx++)
+                for(size_t rect_mid_p_idx = 0; rect_mid_p_idx < 4; rect_mid_p_idx++)
                 {
                     rect_mid_p[rect_mid_p_idx].x = (rect_p[rect_mid_p_idx].x + \
                                                     rect_p[(rect_mid_p_idx + 1) % 4].x) / 2;
@@ -125,6 +136,10 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                     final_mid_p[0] = rect_mid_p[1];
                     final_mid_p[1] = rect_mid_p[3];
                 }
+#ifdef ARMOR_MONO_LIGHTBAR_DEBUG
+            line(lightbar_debug_mat, final_mid_p[0], final_mid_p[1], \
+                 Scalar(0, 255, 0), 1);
+#endif
                 // Based on the slope of lightbar to filter.
                 slope = (float)((final_mid_p[0].y - final_mid_p[1].y) / \
                                 (final_mid_p[0].x - final_mid_p[1].x + 0.000001));
@@ -172,6 +187,25 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
             }
         }
     }
+
+#ifdef ARMOR_MONO_LIGHTBAR_DEBUG
+        string debug_lightbar_num = " No.";
+        for(size_t lightbar_debug_idx = 0; lightbar_debug_idx < light_bars.size(); lightbar_debug_idx++)
+        {
+            debug_lightbar_num = debug_lightbar_num + to_string((int)lightbar_debug_idx);
+
+            line(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).p[0], \
+                 light_bars.at(lightbar_debug_idx).p[1], Scalar(255, 0, 0), 2);
+            putText(lightbar_debug_mat, debug_lightbar_num, light_bars.at(lightbar_debug_idx).p[0], \
+                    0.4, 0.25, Scalar(255, 255, 255), 1);
+            line(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).apex_p[0], \
+                 light_bars.at(lightbar_debug_idx).apex_p[1], Scalar(0, 255, 0), 1);
+            circle(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).mid_p, \
+                   3, Scalar(255, 255,255), -1);
+        }
+        imshow("debug", lightbar_debug_mat);
+        cout /*<< light_bars.size() */<< endl;
+#endif
 }
 
 

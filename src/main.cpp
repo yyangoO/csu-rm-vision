@@ -13,14 +13,16 @@ int main(void)
 {
     RMVideoCapture cap0("/dev/video0", 3);
 //    RMVideoCapture cap1("/dev/video1", 3);
-    cvNamedWindow("img0", CV_WINDOW_AUTOSIZE);
+//    cvNamedWindow("img0", CV_WINDOW_AUTOSIZE);
 //    cvNamedWindow("img1", CV_WINDOW_AUTOSIZE);
-    cvNamedWindow("debug", CV_WINDOW_AUTOSIZE);
+//    cvNamedWindow("debug", CV_WINDOW_AUTOSIZE);
 
 
     Mat img0, img1, img2;
 
     cap0.setVideoFormat(1280, 720, 1);
+    cap0.setVideoFPS(60);
+    cap0.setExposureTime(false, 12);
     cap0.info();
     cap0.startStream();
 //    cap1.setVideoFormat(2560, 720, 1);
@@ -40,7 +42,7 @@ int main(void)
 //        imshow("img1", img1);
         dev_cfg.mono_undistort(img0, img2, params);
         armor_mono.armor_mono_proc(img2, params);
-        imshow("debug", img2);
+//        imshow("debug", img2);
         if(waitKey(1) != -1)
         {
 //            idx++;

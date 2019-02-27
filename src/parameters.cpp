@@ -44,6 +44,9 @@ void Params::params_xml_read(void)
     fs["blue_v_h1"]   >> blue_v_h1;
     fs["gauss_blur_coresize"] >> gauss_blur_coresize;
     fs["oc_oprt_coresize"] >> oc_oprt_coresize;
+    fs["lightbar_length_min"] >> lightbar_length_min;
+    fs["lightbar_length_retio"] >> lightbar_length_ratio;
+    fs["lightbar_slope_min"] >> lightbar_slope_min;
     fs.release();
 //    FileStorage fs(cam_params_xml_dir, FileStorage::READ);
 //    fs[""]
