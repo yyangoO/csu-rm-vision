@@ -14,6 +14,13 @@
 
 
 //#define POINT_SORT_BY_X(A, B)   ()
+#define Pi          3.14159265
+
+const cv::Point world_origin_point = cv::Point2f(0.0f, 0.0f);
+
+
+void fill_hole(cv::Mat &in_img, cv::Mat &out_img);
+void rec_apex_remap(cv::Point2f *rec_apex, cv::Point2f rec_mid_point);
 
 
 #endif // INCLUDES_H

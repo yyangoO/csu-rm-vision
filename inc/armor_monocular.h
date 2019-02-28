@@ -15,9 +15,9 @@ public:
 private:
     void range_cut(cv::Mat &in_img, cv::Mat &out_img);
     void hsv_proc(cv::Mat &in_img, cv::Mat &out_img, Params params);
-    void fill_hole(cv::Mat &in_img, cv::Mat &out_img);
     void find_lightbar(cv::Mat &in_img, Params params);
     void find_armor(Params params);
+    void distance_rangeing(Params params);
     // vector manage:
     void vector_clear(void);
 public:
@@ -28,20 +28,21 @@ public:
     cv::Mat mono_img;
     // Final result:
     struct ArmorROI_t {
-        cv::Point apex_point[4];
-        cv::Point light_point[4];
-        cv::Point center;
+        cv::Point2f apex_point[4];
+        cv::Point2f light_point[4];
+        cv::Point2f center;
         float trust_level;
     };
     std::vector<ArmorROI_t> armors;
 private:
+    bool roi_overflow_flag;       // Flag of lightbar's crossing.
     cv::Point last_center;
     struct LightBar_t {
-        cv::Point p[2];         // Light bar, describe as two points.
-        cv::Point apex_p[2];    // Armor upright line, describe as two points.
-        cv::Point mid_p;        // Light bar's middle point.
+        cv::Point2f p[2];         // Light bar, describe as two points.
+        cv::Point2f apex_p[2];    // Armor upright line, describe as two points.
+        cv::Point2f mid_p;        // Light bar's middle point.
         float angle;
-        float length;           // Pixel unit.
+        float length;             // Pixel unit.
     };
     std::vector<LightBar_t> light_bars;
     cv::Mat oc_element;

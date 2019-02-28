@@ -22,7 +22,8 @@ SOURCES += \
     src/armor_binocular.cpp \
     src/armor_detect.cpp \
     src/parameters.cpp \
-    src/device.cpp
+    src/device.cpp \
+    src/rin_porc_lib.cpp
 
 HEADERS += \
     inc/includes.h \
