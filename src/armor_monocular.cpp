@@ -207,7 +207,7 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
 // Input image: Bin(coutours); Output image: RGB.
 void ArmorMono::find_armor(Params params)
 {
-#define ARMOR_MONO_ARMOR_DEBUG
+//#define ARMOR_MONO_ARMOR_DEBUG
 
     ArmorROI_t armor_roi_temp = {};
 #ifdef ARMOR_MONO_ARMOR_DEBUG
@@ -292,20 +292,22 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
     dilate(in_img, in_img, oc_element);
     find_lightbar(in_img, params);
     find_armor(params);
-    distance_rangeing(params);
+    angle_slove(params);
 }
 
 
-void ArmorMono::distance_rangeing(Params params)
+void ArmorMono::angle_slove(Params params)
 {
 #define ARMOR_MONO_RANGING_DEBUG
-    Mat ranging_debug_mat;
+    Mat ranging_debug_mat = Mat(720, 1280, CV_8UC3, Scalar(0, 0, 0));
     Mat rvec, tvec;
     Mat Rvec;
     Mat_<double> Tvec;
+    Mat rotMat;
     double rm[3][3];
     vector<Point3f> marker3d;
-    Point world_point[4];
+    vector<Point> world_point;
+    vector<Point> project_point;
 
     marker3d.push_back(Point3f(-6.75f, -2.75f, 0.0f));
     marker3d.push_back(Point3f(-6.75f, 2.75f, 0.0f));
@@ -314,23 +316,38 @@ void ArmorMono::distance_rangeing(Params params)
 
     for(size_t distance_idx; distance_idx < armors.size(); distance_idx++)
     {
-        vector<Point> world_point;
+        world_point.clear();
         world_point.push_back((Point)armors.at(distance_idx).light_point[0]);
         world_point.push_back((Point)armors.at(distance_idx).light_point[1]);
         world_point.push_back((Point)armors.at(distance_idx).light_point[2]);
         world_point.push_back((Point)armors.at(distance_idx).light_point[3]);
 
         solvePnP(marker3d, world_point, params.mono_cam_matrix, \
-                 params.mono_cam_distcoeffs, rvec, tvec, CV_ITERATIVE);
-        Mat rotMat(3, 3, CV_64FC1, rm);
+                 params.mono_cam_distcoeffs, rvec, tvec);
         Rodrigues(rvec, rotMat);
-        float theta_z = atan2(rm[1][0], rm[0][0]) * 57.2958;
-        float theta_y = atan2(-rm[2][0], sqrt(rm[2][0] * rm[2][2] * rm[2][2])) * 57.2958;
-        float theta_x = atan2(rm[2][1], rm[2][2]) * 57.2958;
-        float rz = theta_z * Pi / 180;
-        float outx = cos(rz) * theta_x - sin(rz) * theta_y;
-        float outy = sin(rz) * theta_x + cos(rz) * theta_y;
-        double tz = tvec.ptr<double>(0)[2];
-        cout << tz << endl;
+        cout << rotMat << endl;
+        project_point.clear();
+        projectPoints(marker3d, rvec, tvec, params.mono_cam_matrix, \
+                      params.mono_cam_distcoeffs, project_point);
+        for(size_t proj_p_idx = 0; proj_p_idx < project_point.size(); proj_p_idx++)
+        {
+            circle(ranging_debug_mat, project_point[proj_p_idx], 3, Scalar(255, 0, 0), -1);
+        }
+//        Mat rotMat(3, 3, CV_64FC1, rm);
+//        Rodrigues(rvec, rotMat);
+//        float theta_z = atan2(rm[1][0], rm[0][0]) * 57.2958;
+//        float theta_y = atan2(-rm[2][0], sqrt(rm[2][0] * rm[2][2] * rm[2][2])) * 57.2958;
+//        float theta_x = atan2(rm[2][1], rm[2][2]) * 57.2958;
+//        float rz = theta_z * Pi / 180;
+//        float outx = cos(rz) * theta_x - sin(rz) * theta_y;
+//        float outy = sin(rz) * theta_x + cos(rz) * theta_y;
+//        double tz = tvec.ptr<double>(0)[2];
+//        cout << tz << endl;
+
     }
+    imshow("debug", ranging_debug_mat);
+
+
+//#ifdef ARMOR_MONO_RANGING_DEBUG
+
 }

@@ -17,7 +17,7 @@ private:
     void hsv_proc(cv::Mat &in_img, cv::Mat &out_img, Params params);
     void find_lightbar(cv::Mat &in_img, Params params);
     void find_armor(Params params);
-    void distance_rangeing(Params params);
+    void angle_slove(Params params);
     // vector manage:
     void vector_clear(void);
 public:
