@@ -39,7 +39,7 @@ void rec_apex_remap(Point2f *rec_apex, Point2f rec_mid_point)
         slope_temp = ((rec_apex + point_idx)->y - rec_mid_point.y) /   \
                      ((rec_apex + point_idx)->x - rec_mid_point.x);
         angle[point_idx] = atan(slope_temp);
-        angle[point_idx] = angle[point_idx] + 2 * Pi;
+        angle[point_idx] = angle[point_idx] + 2 * CV_PI;
     }
     for(size_t sort_idx = 0; sort_idx < 3; sort_idx++)
     {

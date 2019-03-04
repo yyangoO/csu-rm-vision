@@ -27,15 +27,17 @@ public:
     cv::Mat bin_img;
     cv::Mat mono_img;
     // Final result:
-    struct ArmorROI_t {
-        cv::Point2f apex_point[4];
-        cv::Point2f light_point[4];
-        cv::Point2f center;
-        float trust_level;
-    };
-    std::vector<ArmorROI_t> armors;
+
 private:
+    const std::vector<cv::Point3f> small_armor_world_point = std::vector<cv::Point3f> {
+        cv::Point3f(-6.75f, -2.75f, 0),
+        cv::Point3f(-6.75f, 2.75f, 0),
+        cv::Point3f(6.75f, 2.75f, 0),
+        cv::Point3f(6.75f, -2.75f, 0)
+    };
+
     bool roi_overflow_flag;       // Flag of lightbar's crossing.
+    cv::Mat oc_element;
     cv::Point last_center;
     struct LightBar_t {
         cv::Point2f p[2];         // Light bar, describe as two points.
@@ -45,7 +47,13 @@ private:
         float length;             // Pixel unit.
     };
     std::vector<LightBar_t> light_bars;
-    cv::Mat oc_element;
+    struct ArmorROI_t {
+        cv::Point2f apex_point[4];
+        cv::Point2f light_point[4];
+        cv::Point2f center;
+        float trust_level;
+    };
+    std::vector<ArmorROI_t> armors;
 };
 
 

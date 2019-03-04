@@ -40,8 +40,8 @@ int main(void)
 //        cap1 >> img1;
         imshow("img0", img0);
 //        imshow("img1", img1);
-        dev_cfg.mono_undistort(img0, img2, params);
-        armor_mono.armor_mono_proc(img2, params);
+//        dev_cfg.mono_undistort(img0, img2, params);
+        armor_mono.armor_mono_proc(img0, params);
 //        imshow("debug", img2);
         if(waitKey(1) != -1)
         {
