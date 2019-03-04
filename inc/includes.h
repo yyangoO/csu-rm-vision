@@ -9,12 +9,25 @@
 #include "opencv2/imgproc/imgproc.hpp"
 
 
+#define INFANTRY_MODE
+//#define HERO_MODE
+//#define SENTRY_MODE
+
+
+#define DEBUG
+//#define RELEASE
+
+#ifdef DEBUG
+#undef RELEASE
+#endif
+#ifdef RELEASE
+#undef DEBUG
+#endif
+
+
 #define ENEMY_RED   1
 #define ENEMY_BLUE  0
 
-
-//#define POINT_SORT_BY_X(A, B)   ()
-#define Pi          3.14159265
 
 const cv::Point world_origin_point = cv::Point2f(0.0f, 0.0f);
 

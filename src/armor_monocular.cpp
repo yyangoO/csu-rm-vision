@@ -6,6 +6,8 @@
  */
 
 
+#include "iostream"
+#include "iomanip"
 #include "math.h"
 
 #include "inc/includes.h"
@@ -301,6 +303,8 @@ void ArmorMono::angle_slove(Params params)
 #define ARMOR_MONO_RANGING_DEBUG
 #ifdef ARMOR_MONO_RANGING_DEBUG
     Mat ranging_debug_mat = Mat(720, 1280, CV_8UC3, Scalar(0, 0, 0));
+    string target_distance = "distance: ";
+    ostringstream target_distance_oss;
 #endif
     Mat rvec, tvec;
     Mat raux, taux;
@@ -323,10 +327,6 @@ void ArmorMono::angle_slove(Params params)
         distance = sqrt(tvec.at<double>(0, 0) * tvec.at<double>(0, 0) + \
                         tvec.at<double>(1, 0) * tvec.at<double>(1, 0) + \
                         tvec.at<double>(2, 0) * tvec.at<double>(2, 0));
-        string target_distance = "distance: ";
-        target_distance = target_distance + to_string(distance);
-        putText(ranging_debug_mat, target_distance, Point(0, 10), \
-                2, 0.5, Scalar(0, 0, 255), 1);
 //        raux.convertTo(rvec, CV_32F);
 //        taux.convertTo(tvec, CV_32F);
 //        Rodrigues(rvec, rot_mat);
@@ -338,6 +338,10 @@ void ArmorMono::angle_slove(Params params)
         {
 //            circle(ranging_debug_mat, show_point[proj_p_idx], 3, Scalar(255, 255, 255), -1);
         }
+        target_distance_oss << setiosflags(ios::fixed) << setprecision(2) << distance;
+        target_distance = target_distance + target_distance_oss.str();
+        putText(ranging_debug_mat, target_distance, Point(0, 10), \
+                FONT_HERSHEY_TRIPLEX, 0.5, Scalar(0, 255, 0), 1);
 #endif
     }
 #ifdef ARMOR_MONO_RANGING_DEBUG
