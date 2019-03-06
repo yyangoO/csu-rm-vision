@@ -338,10 +338,11 @@ void ArmorMono::angle_slove(Params params)
         {
 //            circle(ranging_debug_mat, show_point[proj_p_idx], 3, Scalar(255, 255, 255), -1);
         }
-        target_distance_oss << setiosflags(ios::fixed) << setprecision(2) << distance;
-        target_distance = target_distance + target_distance_oss.str();
+        target_distance_oss << setiosflags(ios::fixed) << setprecision(3) << distance;
+        target_distance = target_distance + target_distance_oss.str() + " cm.";
         putText(ranging_debug_mat, target_distance, Point(0, 10), \
                 FONT_HERSHEY_TRIPLEX, 0.5, Scalar(0, 255, 0), 1);
+//        cout << distance << endl;
 #endif
     }
 #ifdef ARMOR_MONO_RANGING_DEBUG

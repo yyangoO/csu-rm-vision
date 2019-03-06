@@ -22,15 +22,17 @@ int main(void)
 
     cap0.setVideoFormat(1280, 720, 1);
     cap0.setVideoFPS(60);
-    cap0.setExposureTime(false, 12);
+    cap0.setExposureTime(false, 20);
     cap0.info();
     cap0.startStream();
+    rin_serial.serrial_cmd();
 //    cap1.setVideoFormat(2560, 720, 1);
 //    cap1.info();
 //    cap1.startStream();
     int idx = 0;
     while(1)
     {
+        rin_serial.data_send("111");
 //        Mat x = (Mat_<double>(2, 3) << 1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
         params.param_init();
 //        FileStorage fs(params.cam_params_xml_dir, FileStorage::WRITE);
