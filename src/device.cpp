@@ -12,7 +12,11 @@
 #include <errno.h>
 
 
-//using namespace std;
+#define SERIAL_BAUDRATE B115200
+#define DEVICE_PORT "/dev/ttyUSB0"
+
+
+using namespace std;
 using namespace cv;
 
 
@@ -21,62 +25,64 @@ RinSerial rin_serial;
 // Open serial.
 void RinSerial::serrial_cmd(void)
 {
-    uid_t uid;
-    int fd;
-    const char *path = "/dev/ttyS0";
-    struct termios port_settins;
-
-    // Get root.
-    uid = getuid();
-    if(setuid(0)){}
-
-    // Open port.
-    fd = open(path, O_RDWR | O_NOCTTY | O_NDELAY);
-    if(fd == -1)
+//    setuid(getuid());
+//    setuid(getgid());
+    _serial_fd = open(DEVICE_PORT, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if(_serial_fd == -1)
     {
-        perror("Error: Serrial port open failed!\n");
+        perror("@!Err: (port open failed)");
     }
-    else
+    tcgetattr(_serial_fd, &opt);
+    cfmakeraw(&opt);
+    cfsetispeed(&opt, SERIAL_BAUDRATE);
+    cfsetospeed(&opt, SERIAL_BAUDRATE);
+    tcsetattr(_serial_fd, TCSANOW, &opt);
+    if(_serial_fd == -1)
     {
-        fcntl(fd, F_SETFL, 0);
-        printf("@: Serrial port open succeed!\n");
+        perror("@!Err(baudrate set failed)");
     }
-    // Configure port.
-    cfsetispeed(&port_settins, B115200);
-    cfsetospeed(&port_settins, B115200);
-    port_settins.c_cflag &= ~PARENB;
-    port_settins.c_cflag &= ~CSTOPB;
-    port_settins.c_cflag &= ~CSIZE;
-    port_settins.c_cflag |= CS8;
-    tcsetattr(fd, TCSANOW, &port_settins);
-    if(fd == -1)
+    opt.c_cflag &= ~PARENB;
+    opt.c_cflag &= ~CSTOPB;
+    opt.c_cflag &= ~CSIZE;
+    opt.c_cflag |= CS8;
+    opt.c_cflag &= ~INPCK;
+    opt.c_cflag &= (SERIAL_BAUDRATE | CLOCAL | CREAD);
+    opt.c_cflag &= ~(INLCR | ICRNL);
+    opt.c_cflag &= ~(IXON);
+    opt.c_lflag &- ~(ICANON | ECHO | ECHOE | ISIG);
+    opt.c_oflag &= ~ OPOST;
+    opt.c_oflag &= ~(ONLCR | OCRNL);
+    opt.c_iflag &= ~(ICRNL | INLCR);
+    opt.c_iflag &= ~(IXON | IXOFF | IXANY);
+    opt.c_cc[VTIME] = 1;
+    opt.c_cc[VMIN] = 1;
+    tcflush(_serial_fd, TCIOFLUSH);
+    if(_serial_fd == -1)
     {
-        perror("Error: Serrial port configuretion failed!\n");
+        perror("@!Err(databits set failed)");
     }
-    else
-    {
-        printf("@: Serrial port configure succeed!\n");
-    }
+    printf("@: Serial CMD succeed!\n");
 }
 
-// Serrial write.
+// Serial write.
 void RinSerial::data_send(const void *data)
 {
-    int fd;
-    int x;
-    x = 1024;
-    try
+    tcflush(_serial_fd, TCOFLUSH);
+    if(write(_serial_fd, data, sizeof(data)) != sizeof(data))
     {
-        write(fd, (void *)&x, sizeof(x));
-//        std::cout << sizeof(x) << std::endl;
-    }
-    catch(Exception e)
+        perror(("@!Err(data write failed)"));
+    };
+    if(_serial_fd == -1)
     {
-        std::cout << e.what() << std::endl;
+        perror(("@!Err(data send failed)"));
     }
-//    if(fd == -1)
-//    {
-//        perror("XError: Serrial port tranform failed!\n");
-//    }
 }
-// PC message set
+
+//Serial read.
+void RinSerial::data_read(void)
+{
+    char *x;
+    read(_serial_fd, (void *)x, sizeof(x));
+    tcflush(_serial_fd, TCIFLUSH);
+    cout << (char *)x << endl;
+}

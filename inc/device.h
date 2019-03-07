@@ -1,7 +1,7 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
-
+#include "termios.h"
 #include "inc/includes.h"
 #include "inc/parameters.h"
 
@@ -15,7 +15,7 @@ public:
     void close();
 //private:
     void data_send(const void *data);
-    void data_read(void *data);
+    void data_read(void);
 private:
     struct PCData {
         // General data:
@@ -41,6 +41,8 @@ private:
 
     };
     RobotData robot_data;
+    int _serial_fd;
+    struct termios opt;
 };
 
 
