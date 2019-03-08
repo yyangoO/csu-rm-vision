@@ -17,6 +17,7 @@ private:
     void hsv_proc(cv::Mat &in_img, cv::Mat &out_img, Params params);
     void find_lightbar(cv::Mat &in_img, Params params);
     void find_armor(Params params);
+    void target_detect(Params params);
     void angle_slove(Params params);
     // vector manage:
     void vector_clear(void);
@@ -26,10 +27,35 @@ public:
     cv::Mat grag_img;
     cv::Mat bin_img;
     cv::Mat mono_img;
+    // order informations:
+    struct OrderInfo {
+        // General order:
+        bool enemy_color;   // Red: 0, Blue: 1.
+        // Hero order:
+        bool bullet_type;
+        // Infantry order:
+        bool aim_or_rune;
+    };
+    OrderInfo order_info;
     // Final result:
-
+    struct TargetInfo {
+        // General info:
+        float X_offset;
+        float Y_offset;
+        float Z_offset;
+        // Sentry info:
+        bool shut_flag;
+        char enemy_type;
+    };
+    TargetInfo target_info;
 private:
     const std::vector<cv::Point3f> small_armor_world_point = std::vector<cv::Point3f> {
+        cv::Point3f(-6.75f, -2.75f, 0),
+        cv::Point3f(-6.75f, 2.75f, 0),
+        cv::Point3f(6.75f, 2.75f, 0),
+        cv::Point3f(6.75f, -2.75f, 0)
+    };
+    const std::vector<cv::Point3f> big_armor_world_point = std::vector<cv::Point3f> {
         cv::Point3f(-6.75f, -2.75f, 0),
         cv::Point3f(-6.75f, 2.75f, 0),
         cv::Point3f(6.75f, 2.75f, 0),

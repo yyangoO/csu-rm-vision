@@ -1,23 +1,6 @@
 <?xml version="1.0"?>
 <opencv_storage>
 
-<!-- Small armor's world information -->
-<mono_cam_distcoeffs type_id="opencv-matrix">
-  <rows>4</rows>
-  <cols>1</cols>
-  <dt>f</dt>
-  <data>
-    -6.75 -8.1246687465019096e-01 0. 0. 0.</data></mono_cam_distcoeffs>
-
-<!-- Big armor's world information -->
-<mono_cam_matrix type_id="opencv-matrix">
-  <rows>3</rows>
-  <cols>3</cols>
-  <dt>f</dt>
-  <data>
-    2.0093767637811659e+03 0. 6.2172968973045761e+02 0.
-    2.0097579781539550e+03 3.4605641541287878e+02 0. 0. 1.</data></mono_cam_matrix>
-
 <!-- Global parameters: -->
 <!-- Debug type -->
 <debug_type>1</debug_type>

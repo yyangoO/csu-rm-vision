@@ -26,7 +26,6 @@ void Params::params_xml_read(void)
     cam_fs["mono_cam_matrix"] >> mono_cam_matrix;
     cam_fs["mono_cam_distcoeffs"] >> mono_cam_distcoeffs;
     cam_fs.release();
-
     FileStorage fs(proc_params_xml_dir, FileStorage::READ);
     fs["enemy_color"] >> enemy_color;
     fs["red_h_l1"]    >> red_h_l1;

@@ -1,4 +1,0 @@
-#ifndef PR_COMMUNICATE_H
-#define PR_COMMUNICATE_H
-
-#endif // PR_COMMUNICATE_H

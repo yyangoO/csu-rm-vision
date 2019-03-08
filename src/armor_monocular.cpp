@@ -65,6 +65,7 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
 
     Mat org_img = in_img;
 #ifdef ARMOR_MONO_LIGHTBAR_DEBUG
+//    cvNamedWindow("debug", CV_WINDOW_AUTOSIZE);
     Mat lightbar_debug_mat = Mat(in_img.rows, in_img.cols, CV_8UC3, Scalar(0, 0, 0));
 #endif
     LightBar_t lightbar_temp = {};
@@ -72,7 +73,7 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
     vector<Vec4i> hierachy;
     Point2f rect_p[4], rect_mid_p[4], final_mid_p[2];
     Point2f lightbar_mid_p;
-    Point2f sort_temp_point;
+    Point2f apex_remap_temp, lightbar_remap_temp;
     float slope = 0, angle = 0;
     float length[2], mid_length[2], length_ratio = 0;
 
@@ -124,11 +125,23 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                 {
                     final_mid_p[0] = rect_mid_p[0];
                     final_mid_p[1] = rect_mid_p[2];
+                    if(final_mid_p[0].y > final_mid_p[1].y)
+                    {
+                        lightbar_remap_temp = final_mid_p[0];
+                        final_mid_p[0] = final_mid_p[1];
+                        final_mid_p[1] = lightbar_remap_temp;
+                    }
                 }
                 else
                 {
                     final_mid_p[0] = rect_mid_p[1];
                     final_mid_p[1] = rect_mid_p[3];
+                    if(final_mid_p[0].y > final_mid_p[1].y)
+                    {
+                        lightbar_remap_temp = final_mid_p[0];
+                        final_mid_p[0] = final_mid_p[1];
+                        final_mid_p[1] = lightbar_remap_temp;
+                    }
                 }
                 // Based on the slope of lightbar to filter.
                 slope = (float)((final_mid_p[0].y - final_mid_p[1].y) / \
@@ -157,6 +170,13 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                         lightbar_temp.apex_p[0].y = abs(abs(final_mid_p[0].y - \
                                                                     final_mid_p[1].y) + \
                                                                     lightbar_mid_p.y);
+                        // Based on Y value to remap
+                        if(lightbar_temp.apex_p[0].y > lightbar_temp.apex_p[1].y)
+                        {
+                            apex_remap_temp = lightbar_temp.apex_p[0];
+                            lightbar_temp.apex_p[0] = lightbar_temp.apex_p[1];
+                            lightbar_temp.apex_p[1] = apex_remap_temp;
+                        }
                     }
                     else
                     {
@@ -172,6 +192,13 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
                         lightbar_temp.apex_p[1].y = abs(abs(final_mid_p[0].y - \
                                                                     final_mid_p[1].y) + \
                                                                     lightbar_mid_p.y);
+                        // Based on Y value to remap
+                        if(lightbar_temp.apex_p[0].y > lightbar_temp.apex_p[1].y)
+                        {
+                            apex_remap_temp = lightbar_temp.apex_p[0];
+                            lightbar_temp.apex_p[0] = lightbar_temp.apex_p[1];
+                            lightbar_temp.apex_p[1] = apex_remap_temp;
+                        }
                     }
                     light_bars.push_back(lightbar_temp);
                 }
@@ -209,10 +236,11 @@ void ArmorMono::find_lightbar(Mat &in_img, Params params)
 // Input image: Bin(coutours); Output image: RGB.
 void ArmorMono::find_armor(Params params)
 {
-//#define ARMOR_MONO_A  RMOR_DEBUG
+#define ARMOR_MONO_ARMOR_DEBUG
 
     ArmorROI_t armor_roi_temp = {};
 #ifdef ARMOR_MONO_ARMOR_DEBUG
+    cvNamedWindow("debug", CV_WINDOW_AUTOSIZE);
     Mat armor_debug_mat = Mat(720, 1280, CV_8UC3, Scalar(0, 0, 0));
 #endif
     for(size_t lb_idx = 0; lb_idx < light_bars.size(); lb_idx++)
@@ -231,18 +259,18 @@ void ArmorMono::find_armor(Params params)
                     // Finally we have these armors.
                     armor_roi_temp.apex_point[0] = light_bars.at(lb_idx).apex_p[0];
                     armor_roi_temp.apex_point[1] = light_bars.at(lb_idx).apex_p[1];
-                    armor_roi_temp.apex_point[2] = light_bars.at(lb_idx_idx).apex_p[0];
-                    armor_roi_temp.apex_point[3] = light_bars.at(lb_idx_idx).apex_p[1];
+                    armor_roi_temp.apex_point[2] = light_bars.at(lb_idx_idx).apex_p[1];
+                    armor_roi_temp.apex_point[3] = light_bars.at(lb_idx_idx).apex_p[0];
                     armor_roi_temp.light_point[0] = light_bars.at(lb_idx).p[0];
                     armor_roi_temp.light_point[1] = light_bars.at(lb_idx).p[1];
-                    armor_roi_temp.light_point[2] = light_bars.at(lb_idx_idx).p[0];
-                    armor_roi_temp.light_point[3] = light_bars.at(lb_idx_idx).p[1];
+                    armor_roi_temp.light_point[2] = light_bars.at(lb_idx_idx).p[1];
+                    armor_roi_temp.light_point[3] = light_bars.at(lb_idx_idx).p[0];
                     armor_roi_temp.center.x = (light_bars.at(lb_idx).mid_p.x + \
                                                light_bars.at(lb_idx_idx).mid_p.x) / 2;
                     armor_roi_temp.center.y = (light_bars.at(lb_idx).mid_p.y + \
                                                light_bars.at(lb_idx_idx).mid_p.y) / 2;
-                    rec_apex_remap(&(armor_roi_temp.apex_point[0]), armor_roi_temp.center);
-                    rec_apex_remap(&(armor_roi_temp.light_point[0]), armor_roi_temp.center);
+//                    rec_apex_remap(&(armor_roi_temp.apex_point[0]), armor_roi_temp.center);
+//                    rec_apex_remap(&(armor_roi_temp.light_point[0]), armor_roi_temp.center);
 
                     armors.push_back(armor_roi_temp);
                 }
@@ -273,6 +301,61 @@ void ArmorMono::find_armor(Params params)
 #endif
 }
 
+void ArmorMono::angle_slove(Params params)
+{
+//#define ARMOR_MONO_RANGING_DEBUG
+#ifdef ARMOR_MONO_RANGING_DEBUG
+    cvNamedWindow("debug", CV_WINDOW_AUTOSIZE);
+    Mat ranging_debug_mat = Mat(720, 1280, CV_8UC3, Scalar(0, 0, 0));
+    string target_distance = "distance: ";
+    ostringstream target_distance_oss;
+#endif
+    Mat rvec, tvec;
+    double x_err, y_err, distance;
+    vector<Point2f> real_point, after_point;
+
+    for(size_t real_p_idx = 0; real_p_idx < armors.size(); real_p_idx++)
+    {
+        real_point.clear();
+        real_point.push_back(armors.at(real_p_idx).light_point[0]);
+        real_point.push_back(armors.at(real_p_idx).light_point[1]);
+        real_point.push_back(armors.at(real_p_idx).light_point[2]);
+        real_point.push_back(armors.at(real_p_idx).light_point[3]);
+        solvePnP(small_armor_world_point, real_point, params.mono_cam_matrix, \
+                 params.mono_cam_distcoeffs, rvec, tvec, false, CV_ITERATIVE);
+        x_err = atan(tvec.at<double>(0, 0) / tvec.at<double>(2, 0)) / 2 / CV_PI * 360;
+        y_err = atan(tvec.at<double>(1, 0) / tvec.at<double>(2, 0)) / 2 / CV_PI * 360;
+        distance = sqrt(tvec.at<double>(0, 0) * tvec.at<double>(0, 0) + \
+                        tvec.at<double>(1, 0) * tvec.at<double>(1, 0) + \
+                        tvec.at<double>(2, 0) * tvec.at<double>(2, 0));
+#ifdef ARMOR_MONO_RANGING_DEBUG
+        for(size_t proj_p_idx = 0; proj_p_idx < real_point.size(); proj_p_idx++)
+        {
+            circle(ranging_debug_mat, real_point[proj_p_idx], 3, Scalar(255, 255, 255), -1);
+        }
+        target_distance_oss << setiosflags(ios::fixed) << setprecision(3) << distance;
+        target_distance = target_distance + target_distance_oss.str() + " cm.";
+        putText(ranging_debug_mat, target_distance, Point(0, 10), \
+                FONT_HERSHEY_TRIPLEX, 0.5, Scalar(0, 255, 0), 1);
+//        cout << distance << endl;
+#endif
+    }
+#ifdef ARMOR_MONO_RANGING_DEBUG
+    imshow("debug", ranging_debug_mat);
+#endif
+}
+
+// Detect target.
+void ArmorMono::target_detect(Params params)
+{
+    for(size_t armor_idx = 0; armor_idx < armors.size(); armor_idx++)
+    {
+        target_info.X_offset = armors.at(0).center.x - MONO_IMAGE_CENTER_X;
+        target_info.Y_offset = armors.at(0).center.y - MONO_IMAGE_CENTER_Y;
+//        target_info.X_offset = armors.at(0).center.x - MONO_IMAGE_CENTER_X;
+    }
+}
+
 // Clear vectors.
 void ArmorMono::vector_clear(void)
 {
@@ -295,57 +378,5 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
     find_lightbar(in_img, params);
     find_armor(params);
     angle_slove(params);
-}
-
-
-void ArmorMono::angle_slove(Params params)
-{
-#define ARMOR_MONO_RANGING_DEBUG
-#ifdef ARMOR_MONO_RANGING_DEBUG
-    Mat ranging_debug_mat = Mat(720, 1280, CV_8UC3, Scalar(0, 0, 0));
-    string target_distance = "distance: ";
-    ostringstream target_distance_oss;
-#endif
-    Mat rvec, tvec;
-    Mat raux, taux;
-    Mat rot_mat;
-    double x_err, y_err, distance;
-    vector<Point2f> real_point;
-    vector<Point2f> show_point;
-
-    for(size_t real_p_idx = 0; real_p_idx < armors.size(); real_p_idx++)
-    {
-        real_point.clear();
-        real_point.push_back(armors.at(real_p_idx).light_point[0]);
-        real_point.push_back(armors.at(real_p_idx).light_point[1]);
-        real_point.push_back(armors.at(real_p_idx).light_point[2]);
-        real_point.push_back(armors.at(real_p_idx).light_point[3]);
-        solvePnP(small_armor_world_point, real_point, params.mono_cam_matrix, \
-                 params.mono_cam_distcoeffs, rvec, tvec, false, CV_ITERATIVE);
-        x_err = atan(tvec.at<double>(0, 0) / tvec.at<double>(2, 0)) / 2 / CV_PI * 360;
-        y_err = atan(tvec.at<double>(1, 0) / tvec.at<double>(2, 0)) / 2 / CV_PI * 360;
-        distance = sqrt(tvec.at<double>(0, 0) * tvec.at<double>(0, 0) + \
-                        tvec.at<double>(1, 0) * tvec.at<double>(1, 0) + \
-                        tvec.at<double>(2, 0) * tvec.at<double>(2, 0));
-//        raux.convertTo(rvec, CV_32F);
-//        taux.convertTo(tvec, CV_32F);
-//        Rodrigues(rvec, rot_mat);
-//        show_point.clear();
-//        projectPoints(small_armor_world_point, rvec, tvec, params.mono_cam_matrix, \
-                      params.mono_cam_distcoeffs, show_point);
-#ifdef ARMOR_MONO_RANGING_DEBUG
-        for(size_t proj_p_idx = 0; proj_p_idx < show_point.size(); proj_p_idx++)
-        {
-//            circle(ranging_debug_mat, show_point[proj_p_idx], 3, Scalar(255, 255, 255), -1);
-        }
-        target_distance_oss << setiosflags(ios::fixed) << setprecision(3) << distance;
-        target_distance = target_distance + target_distance_oss.str() + " cm.";
-        putText(ranging_debug_mat, target_distance, Point(0, 10), \
-                FONT_HERSHEY_TRIPLEX, 0.5, Scalar(0, 255, 0), 1);
-//        cout << distance << endl;
-#endif
-    }
-#ifdef ARMOR_MONO_RANGING_DEBUG
-    imshow("debug", ranging_debug_mat);
-#endif
+    target_detect(params);
 }

@@ -9,7 +9,8 @@
 #include "opencv2/imgproc/imgproc.hpp"
 
 
-#define INFANTRY_MODE
+#define INFANTRY_1_MODE
+//#define INFANTRY_2_MODE
 //#define HERO_MODE
 //#define SENTRY_MODE
 
@@ -27,6 +28,11 @@
 
 #define ENEMY_RED   1
 #define ENEMY_BLUE  0
+
+#define MONO_IMAGE_X_SIZE   1280
+#define MONO_IMAGE_Y_SIZE   720
+#define MONO_IMAGE_CENTER_X (639.0f)
+#define MONO_IMAGE_CENTER_Y (359.0f)
 
 
 const cv::Point world_origin_point = cv::Point2f(0.0f, 0.0f);

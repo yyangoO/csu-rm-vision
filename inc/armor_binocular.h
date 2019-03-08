@@ -1,4 +1,0 @@
-#ifndef ARMOR_BINOCULAR_H
-#define ARMOR_BINOCULAR_H
-
-#endif // ARMOR_BINOCULAR_H

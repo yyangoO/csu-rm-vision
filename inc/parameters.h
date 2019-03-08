@@ -64,10 +64,10 @@ public:
 
 private:
     const std::string proc_params_xml_dir = \
-            "/home/ubuntu/csu_rm_vision/vision_by_rinck/2.0.0/csu_rm_vision/data/proc_params.xml";
+            "/home/csu-rm-infantry-1/csu_rm_vision/vision_by_rinck/csu_rm_vision_v2.1/data/proc_params.xml";
 public:
     const std::string cam_params_xml_dir = \
-            "/home/ubuntu/csu_rm_vision/vision_by_rinck/2.0.0/csu_rm_vision/data/cam_params.xml";
+            "/home/csu-rm-infantry-1/csu_rm_vision/vision_by_rinck/csu_rm_vision_v2.1/data/cam_params.xml";
 };
 
 

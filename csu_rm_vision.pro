@@ -17,10 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/RMVideoCapture.cpp \
     src/main.cpp \
-    src/pr_communicate.cpp \
     src/armor_monocular.cpp \
-    src/armor_binocular.cpp \
-    src/armor_detect.cpp \
     src/parameters.cpp \
     src/device.cpp \
     src/rin_porc_lib.cpp
@@ -28,10 +25,7 @@ SOURCES += \
 HEADERS += \
     inc/includes.h \
     inc/RMVideoCapture.hpp \
-    inc/pr_communicate.h \
-    inc/armor_binocular.h \
     inc/armor_monocular.h \
-    inc/armor_detect.h \
     inc/parameters.h \
     inc/device.h
 

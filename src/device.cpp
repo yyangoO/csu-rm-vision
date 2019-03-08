@@ -11,10 +11,35 @@
 #include <sys/stat.h>
 #include <errno.h>
 
+#include "inc/armor_monocular.h"
+
 
 #define SERIAL_BAUDRATE B115200
 #define DEVICE_PORT "/dev/ttyUSB0"
 
+
+#define VISION_INFO_CMD     (0x01)
+char vision_info_fh[2] = {VISION_INFO_CMD, ~VISION_INFO_CMD};
+char vision_info_ft[2] = {~VISION_INFO_CMD, VISION_INFO_CMD};
+
+#ifdef INFANTRY_1_MODE
+#define INFANTRY_PC_CMD     (0x11)
+char infantry_pc_fh[2] = {INFANTRY_PC_CMD, ~INFANTRY_PC_CMD};
+char infantry_pc_ft[2] = {~INFANTRY_PC_CMD, INFANTRY_PC_CMD};
+#define INFANTRY_ROBO_CMD   (0x21)
+char infantry_robo_fh[2] = {INFANTRY_ROBO_CMD, ~INFANTRY_ROBO_CMD};
+char infantry_robo_ft[2] = {~INFANTRY_ROBO_CMD, INFANTRY_ROBO_CMD};
+#endif
+
+#ifdef HERO_MODE
+#define HERO_PC_CMD         (0x12)
+#define HERO_ROBO_CMD       (0x22)
+#endif
+
+#ifdef SENTRY_MODE
+#define SENTRY_PC_CMD       (0x13)
+#define SENTRY_ROBO_CMD     (0x23)
+#endif
 
 using namespace std;
 using namespace cv;
@@ -22,67 +47,56 @@ using namespace cv;
 
 RinSerial rin_serial;
 
+
 // Open serial.
 void RinSerial::serrial_cmd(void)
 {
-//    setuid(getuid());
-//    setuid(getgid());
     _serial_fd = open(DEVICE_PORT, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if(_serial_fd == -1)
     {
         perror("@!Err: (port open failed)");
     }
-    tcgetattr(_serial_fd, &opt);
-    cfmakeraw(&opt);
-    cfsetispeed(&opt, SERIAL_BAUDRATE);
-    cfsetospeed(&opt, SERIAL_BAUDRATE);
-    tcsetattr(_serial_fd, TCSANOW, &opt);
+    tcgetattr(_serial_fd, &_opt);
+    cfmakeraw(&_opt);
+    cfsetispeed(&_opt, SERIAL_BAUDRATE);
+    cfsetospeed(&_opt, SERIAL_BAUDRATE);
+    tcsetattr(_serial_fd, TCSANOW, &_opt);
     if(_serial_fd == -1)
     {
         perror("@!Err(baudrate set failed)");
     }
-    opt.c_cflag &= ~PARENB;
-    opt.c_cflag &= ~CSTOPB;
-    opt.c_cflag &= ~CSIZE;
-    opt.c_cflag |= CS8;
-    opt.c_cflag &= ~INPCK;
-    opt.c_cflag &= (SERIAL_BAUDRATE | CLOCAL | CREAD);
-    opt.c_cflag &= ~(INLCR | ICRNL);
-    opt.c_cflag &= ~(IXON);
-    opt.c_lflag &- ~(ICANON | ECHO | ECHOE | ISIG);
-    opt.c_oflag &= ~ OPOST;
-    opt.c_oflag &= ~(ONLCR | OCRNL);
-    opt.c_iflag &= ~(ICRNL | INLCR);
-    opt.c_iflag &= ~(IXON | IXOFF | IXANY);
-    opt.c_cc[VTIME] = 1;
-    opt.c_cc[VMIN] = 1;
     tcflush(_serial_fd, TCIOFLUSH);
     if(_serial_fd == -1)
     {
         perror("@!Err(databits set failed)");
     }
-    printf("@: Serial CMD succeed!\n");
-}
-
-// Serial write.
-void RinSerial::data_send(const void *data)
-{
-    tcflush(_serial_fd, TCOFLUSH);
-    if(write(_serial_fd, data, sizeof(data)) != sizeof(data))
+    else
     {
-        perror(("@!Err(data write failed)"));
-    };
-    if(_serial_fd == -1)
-    {
-        perror(("@!Err(data send failed)"));
+        printf("@: Serial CMD succeed!\n");
     }
 }
 
-//Serial read.
-void RinSerial::data_read(void)
+// Message send.
+void RinSerial::msg_send(void)
 {
-    char *x;
-    read(_serial_fd, (void *)x, sizeof(x));
-    tcflush(_serial_fd, TCIFLUSH);
-    cout << (char *)x << endl;
+#ifdef INFANTRY_1_MODE
+    _pc_data.X_offset = (short int)(armor_mono.target_info.X_offset / MONO_IMAGE_X_SIZE * 2 * 32767);
+    _pc_data.Y_offset = (short int)(armor_mono.target_info.Y_offset / MONO_IMAGE_Y_SIZE * 2 * 32767);
+    _infantry_pc_msg[0] = _pc_data.X_offset >> 8;
+    _infantry_pc_msg[1] = _pc_data.X_offset & 0xff;
+    _infantry_pc_msg[2] = _pc_data.Y_offset >> 8;
+    _infantry_pc_msg[3] = _pc_data.Y_offset & 0xff;
+    _infantry_pc_msg[4] = _pc_data.Z_offset;
+    write(_serial_fd, (void *)infantry_pc_fh, sizeof(infantry_pc_fh) / sizeof(char));       // Frame header.
+    write(_serial_fd, (void *)_infantry_pc_msg, sizeof(_infantry_pc_msg) / sizeof(char));   // Data.
+    write(_serial_fd, (void *)infantry_pc_ft, sizeof(infantry_pc_ft) / sizeof(char));       // Frame tail.
+#endif
+
+#ifdef HERO_MODE
+
+#endif
+
+#ifdef ENGINEER_MODE
+
+#endif
 }
