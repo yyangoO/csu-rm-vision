@@ -63,12 +63,13 @@ public:
     float armor_length_retio_min;   // Based on this to match lightbars.
     float armor_length_mid_y_diff;  // Based on this to match lightbars.
     float armor_length_mid_x_diff;  // Based on this to match lightbars.
+
+    int cut_img_rate;
 private:
     const std::string proc_params_xml_dir = \
-            "/home/csu-rm-infantry-1/csu_rm_vision/vision_by_rinck/csu_rm_vision_v2.1/data/proc_params.xml";
-public:
+            "../csu_rm_vision_v2.1/data/proc_params.xml";
     const std::string cam_params_xml_dir = \
-            "/home/csu-rm-infantry-1/csu_rm_vision/vision_by_rinck/csu_rm_vision_v2.1/data/cam_params.xml";
+            "../csu_rm_vision_v2.1/data/cam_params.xml";
 };
 
 

@@ -26,6 +26,7 @@ void Params::params_xml_read(void)
     cam_fs["mono_cam_matrix_640_1"] >> mono_cam_matrix;
     cam_fs["mono_cam_distcoeffs_640_1"] >> mono_cam_distcoeffs;
     cam_fs.release();
+
     FileStorage fs(proc_params_xml_dir, FileStorage::READ);
     fs["enemy_color"] >> enemy_color;
     fs["red_h_l1"]    >> red_h_l1;
@@ -55,6 +56,7 @@ void Params::params_xml_read(void)
     fs["armor_length_retio_min"] >> armor_length_retio_min;
     fs["armor_length_mid_y_diff"] >> armor_length_mid_y_diff;
     fs["armor_length_mid_x_diff"] >> armor_length_mid_x_diff;
+    fs["cut_img_rate"] >> cut_img_rate;
     fs.release();
 }
 

@@ -24,9 +24,13 @@ ArmorMono armor_mono;
 
 // Based on the last time centers to cut the range of image.
 // Input image: RGB; Output image: RGB.
-void ArmorMono::range_cut(Mat &in_img, Mat &out_img)
+void ArmorMono::range_cut(Mat &in_img, Mat &out_img, Params params)
 {
     Mat org_img = in_img;
+    if(target_flag)
+    {
+
+    }
 }
 
 // Used to pick up red and blue from low expusore image.
@@ -59,15 +63,8 @@ void ArmorMono::hsv_proc(Mat &in_img, Mat &out_img, Params params)
 
 // Find the lightbars, input mat must be binocolor.
 // Input image: Bin; Output image: RGB.
-void ArmorMono::find_lightbar(Mat &in_img, const Mat cam_img, Params params)
+void ArmorMono::find_lightbar(Mat &in_img, Params params)
 {
-#ifdef DEBUG
-    Mat lightbar_debug_mat = Mat(cam_img.rows, cam_img.cols, CV_8UC3, Scalar(0, 0, 0));
-    string debug_lightbar_num = "lightbar number: ";
-    string debug_lightbar_length_img = "lightbar length min: ";
-    string debug_lightbar_length_retio = "lightbar length retio: ";
-    string debug_lightbar_angle_min = "lightbar angle min: ";
-#endif
     Mat org_img = in_img;
     LightBar_t lightbar_temp = {};
     vector<vector<Point>> contours;
@@ -89,13 +86,6 @@ void ArmorMono::find_lightbar(Mat &in_img, const Mat cam_img, Params params)
         length[1] = powf((rect_p[1].x - rect_p[2].x), 2) + powf((rect_p[1].y - rect_p[2].y), 2);
         length[1] = sqrtf(length[1]);
 
-#ifdef DEBUG
-        for(size_t rect_idx = 0; rect_idx < 4; rect_idx++)
-        {
-            line(lightbar_debug_mat, rect_p[rect_idx], rect_p[(rect_idx + 1) % 4], \
-                 Scalar(255, 0, 0), 1);
-        }
-#endif
         // Based on the length to filter.
         if((length[0] > params.lightbar_length_min) || (length[1] > params.lightbar_length_min))
         {
@@ -211,48 +201,13 @@ void ArmorMono::find_lightbar(Mat &in_img, const Mat cam_img, Params params)
             }
         }
     }
-
-#ifdef DEBUG
-        for(size_t lightbar_debug_idx = 0; lightbar_debug_idx < light_bars.size(); lightbar_debug_idx++)
-        {
-            line(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).p[0], \
-                 light_bars.at(lightbar_debug_idx).p[1], Scalar(255, 0, 0), 2);
-            line(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).apex_p[0], \
-                 light_bars.at(lightbar_debug_idx).apex_p[1], Scalar(0, 255, 0), 1);
-            circle(lightbar_debug_mat, light_bars.at(lightbar_debug_idx).mid_p, \
-                   3, Scalar(255, 255,255), -1);
-        }
-        debug_lightbar_num = debug_lightbar_num + to_string(light_bars.size());
-        putText(lightbar_debug_mat, debug_lightbar_num, Point(0, 15), \
-                DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-        debug_lightbar_length_img = debug_lightbar_length_img + to_string(params.lightbar_length_min);
-        putText(lightbar_debug_mat, debug_lightbar_length_img, Point(0, 30), \
-                DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-        debug_lightbar_num = debug_lightbar_num + to_string(params.lightbar_length_ratio);
-        putText(lightbar_debug_mat, debug_lightbar_num, Point(0, 45), \
-                DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-        debug_lightbar_angle_min = debug_lightbar_angle_min + to_string(params.lightbar_angle_min);
-        putText(lightbar_debug_mat, debug_lightbar_angle_min, Point(0, 60), \
-                DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-        cvNamedWindow("find_lightbar", CV_WINDOW_AUTOSIZE);
-        imshow("find_lightbar", lightbar_debug_mat);
-#endif
 }
 
 
 // Find Armors.
 // Input image: Bin(coutours); Output image: RGB.
-void ArmorMono::find_armor(const Mat cam_img, Params params)
+void ArmorMono::find_armor(Params params)
 {
-#ifdef DEBUG
-    Mat armor_debug_mat = Mat(cam_img.rows, cam_img.cols, CV_8UC3, Scalar(0, 0, 0));
-    string debug_armor_num = "armor number: ";
-    string debug_lightbar_angle_diff = "lightbar angle diff: ";
-    string debug_lightbar_length_diff = "lightbar length diff: ";
-    string debug_lightbar_mid_y_diff = "lightbar mid_y diff: ";
-    string debug_lightbar_mid_x_diff = "lightbar mid_x diff: ";
-#endif
-
     ArmorROI_t armor_roi_temp = {};
     for(size_t lb_idx = 0; lb_idx < light_bars.size(); lb_idx++)
     {
@@ -305,37 +260,6 @@ void ArmorMono::find_armor(const Mat cam_img, Params params)
             }
         }
     }
-
-#ifdef DEBUG
-    for(size_t armor_idx = 0; armor_idx < armors.size(); armor_idx++)
-    {
-        for(size_t apex_idx = 0; apex_idx < 4; apex_idx++)
-        {
-            line(armor_debug_mat, armors.at(armor_idx).apex_point[apex_idx], \
-                 armors.at(armor_idx).apex_point[(apex_idx + 1) % 4], \
-                 Scalar(0, 0, 255), 1);
-            circle(armor_debug_mat, armors.at(armor_idx).center, \
-                   5, Scalar(255, 255,255), -1);
-        }
-    }
-    debug_armor_num = debug_armor_num + to_string(armors.size());
-    putText(armor_debug_mat, debug_armor_num, Point(0, 15), \
-            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-    debug_lightbar_angle_diff = debug_lightbar_angle_diff + to_string(params.armor_angle_diff_min);
-    putText(armor_debug_mat, debug_lightbar_angle_diff, Point(0, 30), \
-            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-    debug_lightbar_length_diff = debug_lightbar_length_diff + to_string(params.armor_length_retio_min);
-    putText(armor_debug_mat, debug_lightbar_length_diff, Point(0, 45), \
-            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-    debug_lightbar_mid_y_diff = debug_lightbar_mid_y_diff + to_string(params.armor_length_mid_y_diff);
-    putText(armor_debug_mat, debug_lightbar_mid_y_diff, Point(0, 60), \
-            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-    debug_lightbar_mid_x_diff = debug_lightbar_mid_x_diff + to_string(params.armor_length_mid_x_diff);
-    putText(armor_debug_mat, debug_lightbar_mid_x_diff, Point(0, 75), \
-            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-    cvNamedWindow("find_armor", CV_WINDOW_AUTOSIZE);
-    imshow("find_armor", armor_debug_mat);
-#endif
 }
 
 float ArmorMono::distance_slove(Point2f *apex_point, Params params)
@@ -360,13 +284,9 @@ float ArmorMono::distance_slove(Point2f *apex_point, Params params)
 // Detect target.
 void ArmorMono::target_detect(const Mat cam_img, Params params)
 {
-#ifdef DEBUG
-    Mat debug_target_img;
-    string target_distance = "target distance: ";
-#endif
-
-    ArmorROI_t final_target;
     float hightset_trust_lev = 0, curr_trust_lev = 0;
+    target_flag = false;
+    final_target = {};
     for(size_t armor_idx = 0; armor_idx < armors.size(); armor_idx++)
     {
         curr_trust_lev = 5.0 * (CV_PI - armors.at(armor_idx).flat_angle) + \
@@ -377,19 +297,8 @@ void ArmorMono::target_detect(const Mat cam_img, Params params)
             final_target = armors.at(armor_idx);
             hightset_trust_lev = curr_trust_lev;
         }
+        target_flag = true;
     }
-
-#ifdef DEBUG
-    debug_target_img = cam_img.clone();
-    // Show informations.
-    target_distance = target_distance + to_string(final_target.distance);
-    putText(debug_target_img, target_distance, Point(0, 15), \
-            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-    circle(debug_target_img, final_target.center, \
-           5, Scalar(255, 255,255), -1);
-    cvNamedWindow("target_image", CV_WINDOW_AUTOSIZE);
-    imshow("target_image", debug_target_img);
-#endif
 }
 
 // Clear vectors.
@@ -405,11 +314,24 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
 #ifdef DEBUG
     struct timeval tv1, tv2;
     struct timezone tz1, tz2;
-    Mat debug_cam_img, debug_bin_img;
+    Mat debug_cam_img;
     string debug_fps = "fps: ";
     string debug_proc_tim = "porc tim: ";
     string debug_gauss_blur_coresize = "gauss blur coresize: ";
     string debug_oc_opt_coresize = "oc opt coresize: ";
+    string debug_cut_img_rate = "cut img rate: ";
+    string debug_lightbar_num = "lightbar number: ";
+    string debug_lightbar_length_min = "lightbar length min: ";
+    string debug_lightbar_length_retio = "lightbar length retio: ";
+    string debug_lightbar_angle_min = "lightbar angle min: ";
+    string debug_armor_num = "armor number: ";
+    string debug_lightbar_angle_diff = "lightbar angle diff: ";
+    string debug_lightbar_length_diff = "lightbar length diff: ";
+    string debug_lightbar_mid_y_diff = "lightbar mid_y diff: ";
+    string debug_lightbar_mid_x_diff = "lightbar mid_x diff: ";
+    string debug_target_distance = "target distance: ";
+    string debug_target_flag = "target flag: ";
+    string debug_xyz = "target XYZ: ";
     float debug_proc_tim_val;
 #endif
     const Mat cam_img = in_img.clone();   // Should not be change.
@@ -419,7 +341,7 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
 #endif
 
     vector_clear();
-    range_cut(in_img, in_img);
+    range_cut(in_img, in_img, params);
     hsv_proc(in_img, in_img, params);
     fill_hole(in_img, in_img);
     GaussianBlur(in_img, in_img, Size(params.gauss_blur_coresize, params.gauss_blur_coresize), 0);
@@ -428,12 +350,8 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
     erode(in_img, in_img, oc_element);
     dilate(in_img, in_img, oc_element);
 
-#ifdef DEBUG
-    debug_bin_img = in_img.clone();
-#endif
-
-    find_lightbar(in_img, cam_img, params);
-    find_armor(cam_img, params);
+    find_lightbar(in_img, params);
+    find_armor(params);
     target_detect(cam_img, params);
 
 #ifdef DEBUG
@@ -443,6 +361,26 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
 #endif
 #ifdef DEBUG
     debug_cam_img = cam_img.clone();
+    // Draw proc informations.
+    for(size_t lightbar_debug_idx = 0; lightbar_debug_idx < light_bars.size(); lightbar_debug_idx++)
+    {
+        line(debug_cam_img, light_bars.at(lightbar_debug_idx).p[0], \
+             light_bars.at(lightbar_debug_idx).p[1], Scalar(255, 0, 0), 2);
+        line(debug_cam_img, light_bars.at(lightbar_debug_idx).apex_p[0], \
+             light_bars.at(lightbar_debug_idx).apex_p[1], Scalar(0, 255, 0), 1);
+        circle(debug_cam_img, light_bars.at(lightbar_debug_idx).mid_p, \
+               3, Scalar(255, 255,255), -1);
+    }
+    for(size_t armor_idx = 0; armor_idx < armors.size(); armor_idx++)
+    {
+        for(size_t apex_idx = 0; apex_idx < 4; apex_idx++)
+        {
+            line(debug_cam_img, armors.at(armor_idx).apex_point[apex_idx], \
+                 armors.at(armor_idx).apex_point[(apex_idx + 1) % 4], \
+                 Scalar(0, 0, 255), 1);
+        }
+    }
+    circle(debug_cam_img, final_target.center, 3, Scalar(255, 255,255), -1);
     // Show informations.
     debug_fps = debug_fps + "120";
     putText(debug_cam_img, debug_fps, Point(0, 15), \
@@ -456,9 +394,50 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
     debug_oc_opt_coresize = debug_oc_opt_coresize + to_string(params.oc_oprt_coresize);
     putText(debug_cam_img, debug_oc_opt_coresize, Point(0, 60), \
             DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
-    cvNamedWindow("bin_image", CV_WINDOW_AUTOSIZE);
-    imshow("bin_image", debug_bin_img);
-    cvNamedWindow("camera_image", CV_WINDOW_AUTOSIZE);
-    imshow("camera_image", debug_cam_img);
+    debug_cut_img_rate = debug_cut_img_rate + to_string(params.cut_img_rate);
+    putText(debug_cam_img, debug_cut_img_rate, Point(0, 75), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_lightbar_num = debug_lightbar_num + to_string(light_bars.size());
+    putText(debug_cam_img, debug_lightbar_num, Point(0, 90), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_lightbar_length_min = debug_lightbar_length_min + to_string(params.lightbar_length_min);
+    putText(debug_cam_img, debug_lightbar_length_min, Point(0, 105), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_lightbar_length_retio = debug_lightbar_length_retio + to_string(params.lightbar_length_ratio);
+    putText(debug_cam_img, debug_lightbar_length_retio, Point(0, 120), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_lightbar_angle_min = debug_lightbar_angle_min + to_string(params.lightbar_angle_min);
+    putText(debug_cam_img, debug_lightbar_angle_min, Point(0, 135), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_armor_num = debug_armor_num + to_string(armors.size());
+    putText(debug_cam_img, debug_armor_num, Point(0, 150), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_lightbar_angle_diff = debug_lightbar_angle_diff + to_string(params.armor_angle_diff_min);
+    putText(debug_cam_img, debug_lightbar_angle_diff, Point(0, 165), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_lightbar_length_diff = debug_lightbar_length_diff + to_string(params.armor_length_retio_min);
+    putText(debug_cam_img, debug_lightbar_length_diff, Point(0, 180), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_lightbar_mid_y_diff = debug_lightbar_mid_y_diff + to_string(params.armor_length_mid_y_diff);
+    putText(debug_cam_img, debug_lightbar_mid_y_diff, Point(0, 195), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_lightbar_mid_x_diff = debug_lightbar_mid_x_diff + to_string(params.armor_length_mid_x_diff);
+    putText(debug_cam_img, debug_lightbar_mid_x_diff, Point(0, 210), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+    debug_target_distance = debug_target_distance + to_string(final_target.distance);
+    putText(debug_cam_img, debug_target_distance, Point(0, 225), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 0), 1.5);
+
+    debug_xyz = debug_xyz + to_string(target_info.X_offset) + " " \
+                          + to_string(target_info.Y_offset) + " " \
+                          + to_string(target_info.Z_offset);
+    putText(debug_cam_img, debug_xyz, Point(0, 455), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 255), 1.5);
+    debug_target_flag = debug_target_flag + to_string(target_flag);
+    putText(debug_cam_img, debug_target_flag, Point(0, 470), \
+            DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 255), 1.5);
+
+    cvNamedWindow("debug_image", CV_WINDOW_AUTOSIZE);
+    imshow("debug_image", debug_cam_img);
 #endif
 }

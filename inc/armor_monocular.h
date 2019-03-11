@@ -13,10 +13,10 @@ class ArmorMono
 public:
     void armor_mono_proc(cv::Mat &in_img, Params params);
 private:
-    void range_cut(cv::Mat &in_img, cv::Mat &out_img);
+    void range_cut(cv::Mat &in_img, cv::Mat &out_img, Params params);
     void hsv_proc(cv::Mat &in_img, cv::Mat &out_img, Params params);
-    void find_lightbar(cv::Mat &in_img, const cv::Mat cam_img, Params params);
-    void find_armor(const cv::Mat cam_img, Params params);
+    void find_lightbar(cv::Mat &in_img, Params params);
+    void find_armor(Params params);
     void target_detect(const cv::Mat cam_img, Params params);
     float distance_slove(cv::Point2f *apex_point, Params params);
     // vector manage:
@@ -40,9 +40,9 @@ public:
     // Final result:
     struct TargetInfo {
         // General info:
-        float X_offset;
-        float Y_offset;
-        float Z_offset;
+        short int X_offset;         // -32767 - 32767.
+        short int Y_offset;         // -32767 - 32767.
+        unsigned char Z_offset;     // 0 - 255: 0 - 8m
         // Sentry info:
         bool shut_flag;
         char enemy_type;
@@ -61,9 +61,6 @@ private:
         cv::Point3f(6.75f, 2.75f, 0),
         cv::Point3f(6.75f, -2.75f, 0)
     };
-
-    bool roi_overflow_flag;       // Flag of lightbar's crossing.
-    cv::Mat oc_element;
     cv::Point2f last_center = {MONO_IMAGE_CENTER_X, MONO_IMAGE_CENTER_Y};
     struct LightBar_t {
         cv::Point2f p[2];         // Light bar, describe as two points.
@@ -82,6 +79,11 @@ private:
         float distance;
     };
     std::vector<ArmorROI_t> armors;
+    ArmorROI_t final_target;
+    bool roi_overflow_flag;       // Flag of lightbar's crossing.
+    cv::Mat oc_element;
+    cv::Size track_roi;
+    bool target_flag;
 };
 
 

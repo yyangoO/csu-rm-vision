@@ -48,6 +48,8 @@
 <armor_length_mid_y_diff>0.7</armor_length_mid_y_diff>
 <!-- Based on lightbar's middle point'x to pair them -->
 <armor_length_mid_x_diff>1.3</armor_length_mid_x_diff>
+<!-- The rate of cutting image enlarge -->
+<cut_img_rate>30</cut_img_rate>
 
 
 </opencv_storage>

@@ -93,11 +93,55 @@ void RinSerial::msg_send(void)
     write(_serial_fd, (void *)infantry_pc_ft, sizeof(infantry_pc_ft) / sizeof(char));       // Frame tail.
 #endif
 
+#ifdef INFANTRY_2_MODE
+    _pc_data.X_offset = (short int)(armor_mono.target_info.X_offset/* / MONO_IMAGE_X_SIZE * 2 * 32767*/);
+    _pc_data.Y_offset = (short int)(armor_mono.target_info.Y_offset/* / MONO_IMAGE_Y_SIZE * 2 * 32767*/);
+    cout << _pc_data.X_offset << "  " << _pc_data.Y_offset/* << endl*/;
+    _infantry_pc_msg[0] = _pc_data.X_offset >> 8;
+    _infantry_pc_msg[1] = _pc_data.X_offset & 0xff;
+    _infantry_pc_msg[2] = _pc_data.Y_offset >> 8;
+    _infantry_pc_msg[3] = _pc_data.Y_offset & 0xff;
+    _infantry_pc_msg[4] = _pc_data.Z_offset;
+    write(_serial_fd, (void *)infantry_pc_fh, sizeof(infantry_pc_fh) / sizeof(char));       // Frame header.
+    write(_serial_fd, (void *)_infantry_pc_msg, sizeof(_infantry_pc_msg) / sizeof(char));   // Data.
+    write(_serial_fd, (void *)infantry_pc_ft, sizeof(infantry_pc_ft) / sizeof(char));       // Frame tail.
+#endif
+
+#ifdef HERO_MODE
+    _pc_data.X_offset = (short int)(armor_mono.target_info.X_offset/* / MONO_IMAGE_X_SIZE * 2 * 32767*/);
+    _pc_data.Y_offset = (short int)(armor_mono.target_info.Y_offset/* / MONO_IMAGE_Y_SIZE * 2 * 32767*/);
+    cout << _pc_data.X_offset << "  " << _pc_data.Y_offset/* << endl*/;
+    _infantry_pc_msg[0] = _pc_data.X_offset >> 8;
+    _infantry_pc_msg[1] = _pc_data.X_offset & 0xff;
+    _infantry_pc_msg[2] = _pc_data.Y_offset >> 8;
+    _infantry_pc_msg[3] = _pc_data.Y_offset & 0xff;
+    _infantry_pc_msg[4] = _pc_data.Z_offset;
+    write(_serial_fd, (void *)infantry_pc_fh, sizeof(infantry_pc_fh) / sizeof(char));       // Frame header.
+    write(_serial_fd, (void *)_infantry_pc_msg, sizeof(_infantry_pc_msg) / sizeof(char));   // Data.
+    write(_serial_fd, (void *)infantry_pc_ft, sizeof(infantry_pc_ft) / sizeof(char));       // Frame tail.
+#endif
+
+#ifdef SENTRY_MODE
+
+#endif
+}
+
+// Message read.
+void RinSerial::msg_read(void)
+{
+#ifdef INFANTRY_1_MODE
+
+#endif
+
+#ifdef INFANTRY_2_MODE
+
+#endif
+
 #ifdef HERO_MODE
 
 #endif
 
-#ifdef ENGINEER_MODE
+#ifdef SENTRY_MODE
 
 #endif
 }

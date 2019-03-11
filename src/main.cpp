@@ -18,7 +18,7 @@ int main(void)
     params.param_init();
     mono_cap.setVideoFormat(MONO_IMAGE_X_SIZE, MONO_IMAGE_Y_SIZE, 1);
     mono_cap.setVideoFPS(FPS);
-    mono_cap.setExposureTime(false, 10);
+    mono_cap.setExposureTime(false, 15);
     mono_cap.info();
     mono_cap.startStream();
 //    rin_serial.serrial_cmd();
