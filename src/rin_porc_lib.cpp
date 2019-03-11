@@ -7,9 +7,14 @@
 
 
 #include "math.h"
+
 #include "inc/includes.h"
+#include "inc/parameters.h"
+
+#include "inc/RMVideoCapture.hpp"
 
 
+using namespace std;
 using namespace cv;
 
 
@@ -28,57 +33,30 @@ void fill_hole(Mat &in_img, Mat &out_img)
     out_img = org_img | (~cut_img);
 }
 
-// Remap the points' sort as clockwise.
-// Warning: Only deal with convex polygon.
-void rec_apex_remap(Point2f *rec_apex, Point2f rec_mid_point)
+// Calibration
+void calibration_img_get(void)
 {
-//    float slope_temp, angle[4];
-//    Point sort_temp;
-//    for(size_t point_idx = 0; point_idx < 4; point_idx++)
-//    {
-//        slope_temp = ((rec_apex + point_idx)->y - rec_mid_point.y) /   \
-//                     ((rec_apex + point_idx)->x - rec_mid_point.x);
-//        angle[point_idx] = atan(slope_temp);
-////        angle[point_idx] = angle[point_idx] + 2 * CV_PI;
-//    }
-//    for(size_t sort_idx = 0; sort_idx < 3; sort_idx++)
-//    {
-//        if(angle[sort_idx] < angle[sort_idx + 1])
-//        {
-//            sort_temp = rec_apex[sort_idx];
-//            rec_apex[sort_idx] = rec_apex[sort_idx + 1];
-//            rec_apex[sort_idx + 1] = sort_temp;
-//        }
-//        else if(angle[sort_idx] = angle[sort_idx + 1])
-//        {
-
-//        }
-//    }
-    Point2f point_differ[4];
-    Point2f org_point[4];
-    for(size_t point_idx = 0; point_idx < 4; point_idx++)
+    int idx = 0;
+    RMVideoCapture cap("/dev/video0", 3);
+    Mat img;
+    string path;
+    cap.setVideoFormat(MONO_IMAGE_X_SIZE, MONO_IMAGE_Y_SIZE, 1);
+    cap.setVideoFPS(FPS);
+    cap.setExposureTime(false, 50);
+    cap.info();
+    cap.startStream();
+    while(1)
     {
-        org_point[point_idx] = *(rec_apex + point_idx);
-    }
-    for(size_t point_idx = 0; point_idx < 4; point_idx++)
-    {
-        point_differ[point_idx].x = (org_point + point_idx)->x - rec_mid_point.x;
-        point_differ[point_idx].y = (org_point + point_idx)->y - rec_mid_point.y;
-        if((point_differ[point_idx].x > 0) && (point_differ[point_idx].y > 0))
+        cap >> img;
+        cvNamedWindow("calibration_image", CV_WINDOW_AUTOSIZE);
+        imshow("calibration_image", img);
+        if(waitKey(1) != -1)
         {
-            *rec_apex = *(rec_apex + point_idx);
-        }
-        else if((point_differ[point_idx].x > 0) && (point_differ[point_idx].y < 0))
-        {
-            *(rec_apex + 1) = *(rec_apex + point_idx);
-        }
-        else if((point_differ[point_idx].x < 0) && (point_differ[point_idx].y < 0))
-        {
-            *(rec_apex + 2) = *(rec_apex + point_idx);
-        }
-        else if((point_differ[point_idx].x < 0) && (point_differ[point_idx].y > 0))
-        {
-            *(rec_apex + 3) = *(rec_apex + point_idx);
+            idx++;
+            path = "/home/csu-rm-infantry-1/csu_rm_vision/vision_by_rinck/csu_rm_vision_v2.1/data/";
+            path = path + to_string(idx);
+            path = path + ".jpg";
+            imwrite(path, img);
         }
     }
 }

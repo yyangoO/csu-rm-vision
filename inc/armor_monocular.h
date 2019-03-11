@@ -15,10 +15,10 @@ public:
 private:
     void range_cut(cv::Mat &in_img, cv::Mat &out_img);
     void hsv_proc(cv::Mat &in_img, cv::Mat &out_img, Params params);
-    void find_lightbar(cv::Mat &in_img, Params params);
-    void find_armor(Params params);
-    void target_detect(Params params);
-    void angle_slove(Params params);
+    void find_lightbar(cv::Mat &in_img, const cv::Mat cam_img, Params params);
+    void find_armor(const cv::Mat cam_img, Params params);
+    void target_detect(const cv::Mat cam_img, Params params);
+    float distance_slove(cv::Point2f *apex_point, Params params);
     // vector manage:
     void vector_clear(void);
 public:
@@ -64,7 +64,7 @@ private:
 
     bool roi_overflow_flag;       // Flag of lightbar's crossing.
     cv::Mat oc_element;
-    cv::Point last_center;
+    cv::Point2f last_center = {MONO_IMAGE_CENTER_X, MONO_IMAGE_CENTER_Y};
     struct LightBar_t {
         cv::Point2f p[2];         // Light bar, describe as two points.
         cv::Point2f apex_p[2];    // Armor upright line, describe as two points.
@@ -77,7 +77,9 @@ private:
         cv::Point2f apex_point[4];
         cv::Point2f light_point[4];
         cv::Point2f center;
-        float trust_level;
+        float verical_length;
+        float flat_angle;
+        float distance;
     };
     std::vector<ArmorROI_t> armors;
 };

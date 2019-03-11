@@ -80,8 +80,9 @@ void RinSerial::serrial_cmd(void)
 void RinSerial::msg_send(void)
 {
 #ifdef INFANTRY_1_MODE
-    _pc_data.X_offset = (short int)(armor_mono.target_info.X_offset / MONO_IMAGE_X_SIZE * 2 * 32767);
-    _pc_data.Y_offset = (short int)(armor_mono.target_info.Y_offset / MONO_IMAGE_Y_SIZE * 2 * 32767);
+    _pc_data.X_offset = (short int)(armor_mono.target_info.X_offset/* / MONO_IMAGE_X_SIZE * 2 * 32767*/);
+    _pc_data.Y_offset = (short int)(armor_mono.target_info.Y_offset/* / MONO_IMAGE_Y_SIZE * 2 * 32767*/);
+    cout << _pc_data.X_offset << "  " << _pc_data.Y_offset/* << endl*/;
     _infantry_pc_msg[0] = _pc_data.X_offset >> 8;
     _infantry_pc_msg[1] = _pc_data.X_offset & 0xff;
     _infantry_pc_msg[2] = _pc_data.Y_offset >> 8;
