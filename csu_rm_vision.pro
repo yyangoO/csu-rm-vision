@@ -15,19 +15,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    src/RMVideoCapture.cpp \
     src/main.cpp \
     src/armor_monocular.cpp \
     src/parameters.cpp \
     src/device.cpp \
-    src/rin_porc_lib.cpp
+    src/rin_porc_lib.cpp \
+    src/rune_monocular.cpp \
+    src/rin_videocapture.cpp
 
 HEADERS += \
     inc/includes.h \
-    inc/RMVideoCapture.hpp \
     inc/armor_monocular.h \
     inc/parameters.h \
-    inc/device.h
+    inc/device.h \
+    inc/rune_monocular.h \
+    inc/rin_videocapture.h \
+    inc/rin_proc_lib.h
 
 INCLUDEPATH += /usr/local/include \
                /usr/local/include/opencv \

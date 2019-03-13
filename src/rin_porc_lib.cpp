@@ -11,11 +11,21 @@
 #include "inc/includes.h"
 #include "inc/parameters.h"
 
-#include "inc/RMVideoCapture.hpp"
+#include "inc/rin_videocapture.h"
+#include "inc/rin_proc_lib.h"
 
 
 using namespace std;
 using namespace cv;
+
+
+ImgProcCon img_porc_con;
+
+
+ImgProcCon::ImgProcCon(void)
+{
+//    _cam_params_path = "../csu_rm_vision_v2.1/data/proc_params.xml";
+}
 
 
 // Arm to fill the lightbar's hole.
@@ -37,17 +47,16 @@ void fill_hole(Mat &in_img, Mat &out_img)
 void calibration_img_get(void)
 {
     int idx = 0;
-    RMVideoCapture cap("/dev/video0", 3);
+    RinVideoCapture mono_cap("/dev/video0", 3);
     Mat img;
     string path;
-    cap.setVideoFormat(MONO_IMAGE_X_SIZE, MONO_IMAGE_Y_SIZE, 1);
-    cap.setVideoFPS(FPS);
-    cap.setExposureTime(false, 50);
-    cap.info();
-    cap.startStream();
+    mono_cap.set_format(MONO_IMAGE_X_SIZE, MONO_IMAGE_Y_SIZE, 1);
+    mono_cap.set_FPS(FPS);
+    mono_cap.set_exposure_time(false, 8);
+    mono_cap.start_stream();
     while(1)
     {
-        cap >> img;
+        mono_cap >> img;
         cvNamedWindow("calibration_image", CV_WINDOW_AUTOSIZE);
         imshow("calibration_image", img);
         if(waitKey(1) != -1)

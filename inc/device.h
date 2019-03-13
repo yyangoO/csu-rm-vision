@@ -1,3 +1,11 @@
+/*
+ * @ File name: device.h
+ * @ Effect: Serial using.
+ * @ Author: CSU Yangyang
+ * @ Last change date: 2019/1/10
+ */
+
+
 #ifndef DEVICE_H
 #define DEVICE_H
 

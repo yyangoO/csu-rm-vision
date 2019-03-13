@@ -1,3 +1,11 @@
+/*
+ * @ File name: parameters.h
+ * @ Effect: Arm to manage the system's paramsters.
+ * @ Author: CSU Yangyang
+ * @ Last change date: 2019/1/8
+ */
+
+
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
 

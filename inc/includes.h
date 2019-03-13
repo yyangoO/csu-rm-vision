@@ -1,3 +1,11 @@
+/*
+ * @ File name: device.cpp
+ * @ Effect: includes.
+ * @ Author: CSU Yangyang
+ * @ Last change date: 2019/1/10
+ */
+
+
 #ifndef INCLUDES_H
 #define INCLUDES_H
 
@@ -10,11 +18,8 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
-#include "inc/parameters.h"
 
-
-#define INFANTRY_1_MODE
-//#define INFANTRY_2_MODE
+#define INFANTRY_MODE
 //#define HERO_MODE
 //#define SENTRY_MODE
 
@@ -22,15 +27,8 @@
 #define DEBUG
 //#define RELEASE
 
-#ifdef DEBUG
-#undef RELEASE
-#endif
-#ifdef RELEASE
-#undef DEBUG
-#endif
-
 #define DEBUG_IAMGE_TEXT_FONT   FONT_HERSHEY_SIMPLEX
-
+#define DEBUG_IMAGE_TEXT_PERAL  (15)
 
 #define ENEMY_RED   1
 #define ENEMY_BLUE  0
@@ -45,8 +43,6 @@
 #define MONO_IMAGE_CENTER_Y (239.0f)
 #define FPS 120
 
-
-//extern RMVideoCapture cap_mono;
 const cv::Point world_origin_point = cv::Point2f(0.0f, 0.0f);
 
 

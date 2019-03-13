@@ -1,6 +1,6 @@
 /*
  * @ File name: armor_monocular.cpp
- * @ Effect: Process the low exposure value image.
+ * @ Effect: Process the low exposure value image to detect armor.
  * @ Author: CSU Yangyang
  * @ Last change date: 2019/1/10
  */
@@ -295,6 +295,8 @@ void ArmorMono::target_detect(const Mat cam_img, Params params)
         if(curr_trust_lev > hightset_trust_lev)
         {
             final_target = armors.at(armor_idx);
+            target_info.X_offset = (short int)(final_target.center.x - MONO_IMAGE_CENTER_X);
+            target_info.Y_offset = (short int)(final_target.center.y - MONO_IMAGE_CENTER_Y);
             hightset_trust_lev = curr_trust_lev;
         }
         target_flag = true;

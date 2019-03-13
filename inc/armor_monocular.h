@@ -1,3 +1,11 @@
+/*
+ * @ File name: armor_monocular.h
+ * @ Effect: Process the low exposure value image to detect armor.
+ * @ Author: CSU Yangyang
+ * @ Last change date: 2019/1/10
+ */
+
+
 #ifndef ARMOR_MONOCULAR_H
 #define ARMOR_MONOCULAR_H
 
