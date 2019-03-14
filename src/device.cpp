@@ -29,7 +29,7 @@ char vision_info_fh[2] = {VISION_INFO_CMD, ~VISION_INFO_CMD};
 char vision_info_ft[2] = {~VISION_INFO_CMD, VISION_INFO_CMD};
 
 #ifdef INFANTRY_MODE
-#define INFANTRY_PC_CMD     (0x11)
+#define INFANTRY_PC_CMD     (0x03)
 char infantry_pc_fh[2] = {INFANTRY_PC_CMD, ~INFANTRY_PC_CMD};
 char infantry_pc_ft[2] = {~INFANTRY_PC_CMD, INFANTRY_PC_CMD};
 #define INFANTRY_ROBO_CMD   (0x21)
@@ -60,7 +60,7 @@ void RinSerial::serrial_cmd(void)
     _serial_fd = open(DEVICE_PORT, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if(_serial_fd == -1)
     {
-        perror("@!Err: (port open failed)");
+        return;
     }
     tcgetattr(_serial_fd, &_opt);
     cfmakeraw(&_opt);
@@ -69,16 +69,16 @@ void RinSerial::serrial_cmd(void)
     tcsetattr(_serial_fd, TCSANOW, &_opt);
     if(_serial_fd == -1)
     {
-        perror("@!Err(baudrate set failed)");
+        return;
     }
     tcflush(_serial_fd, TCIOFLUSH);
     if(_serial_fd == -1)
     {
-        perror("@!Err(databits set failed)");
+        return;
     }
     else
     {
-        printf("@: Serial CMD succeed!\n");
+        return;
     }
 }
 
@@ -93,7 +93,7 @@ void RinSerial::msg_send(void)
     _infantry_pc_msg[1] = _pc_data.X_offset & 0xff;
     _infantry_pc_msg[2] = _pc_data.Y_offset >> 8;
     _infantry_pc_msg[3] = _pc_data.Y_offset & 0xff;
-    _infantry_pc_msg[4] = _pc_data.Z_offset;
+//    _infantry_pc_msg[4] = _pc_data.Z_offset;
     write(_serial_fd, (void *)infantry_pc_fh, sizeof(infantry_pc_fh) / sizeof(char));       // Frame header.
     write(_serial_fd, (void *)_infantry_pc_msg, sizeof(_infantry_pc_msg) / sizeof(char));   // Data.
     write(_serial_fd, (void *)infantry_pc_ft, sizeof(infantry_pc_ft) / sizeof(char));       // Frame tail.

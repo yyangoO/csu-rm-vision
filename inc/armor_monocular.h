@@ -48,9 +48,9 @@ public:
     // Final result:
     struct TargetInfo {
         // General info:
-        short int X_offset;         // -32767 - 32767.
-        short int Y_offset;         // -32767 - 32767.
-        unsigned char Z_offset;     // 0 - 255: 0 - 8m
+        int16_t X_offset;     // -32767 - 32767.
+        int16_t Y_offset;     // -32767 - 32767.
+        uint8_t Z_offset;     // 0 - 255: 0 - 8m
         // Sentry info:
         bool shut_flag;
         char enemy_type;

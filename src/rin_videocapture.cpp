@@ -31,7 +31,7 @@ RinVideoCapture::RinVideoCapture(const char * device, int buffer_size) : _video_
     _curr_frame = 0;
     _capture_width = 0;
     _capture_height = 0;
-    _mb = new MapBuffer[_buffer_size];
+    _mb = new MapBuffer_t[_buffer_size];
 }
 
 void RinVideoCapture::restart_capture(void)
@@ -271,7 +271,7 @@ bool RinVideoCapture::set_buffersize(unsigned int bsize)
     if (_buffer_size != bsize){
         _buffer_size = bsize;
         delete [] _mb;
-        _mb = new MapBuffer[_buffer_size];
+        _mb = new MapBuffer_t[_buffer_size];
     }
     return true;
 }

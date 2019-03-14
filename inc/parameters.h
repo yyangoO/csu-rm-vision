@@ -74,10 +74,8 @@ public:
 
     int cut_img_rate;
 private:
-    const std::string proc_params_xml_dir = \
-            "../csu_rm_vision_v2.1/data/proc_params.xml";
-    const std::string cam_params_xml_dir = \
-            "../csu_rm_vision_v2.1/data/cam_params.xml";
+    const std::string proc_params_xml_dir = "../csu_rm_vision_v2.1/data/proc_params.xml";
+    const std::string cam_params_xml_dir = "../csu_rm_vision_v2.1/data/cam_params.xml";
 };
 
 

@@ -48,13 +48,12 @@ int main(void)
     mono_cap.set_FPS(FPS);
     mono_cap.set_exposure_time(false, 8);
     mono_cap.start_stream();
-//    rin_serial.serrial_cmd();
+    rin_serial.serrial_cmd();
     while(1)
     {
-//        std::cout << mono_cap.get_FPS() << std::endl;
         mono_cap >> mono_img;
         armor_mono.armor_mono_proc(mono_img, params);
-//        rin_serial.msg_send();
+        rin_serial.msg_send();
         if(waitKey(1) != -1)
         {
             break;

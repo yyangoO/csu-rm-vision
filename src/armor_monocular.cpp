@@ -9,7 +9,7 @@
 #include "iostream"
 #include "iomanip"
 #include "math.h"
-
+#include "sys/time.h"
 #include "inc/includes.h"
 #include "inc/armor_monocular.h"
 #include "inc/parameters.h"
@@ -297,6 +297,7 @@ void ArmorMono::target_detect(const Mat cam_img, Params params)
             final_target = armors.at(armor_idx);
             target_info.X_offset = (short int)(final_target.center.x - MONO_IMAGE_CENTER_X);
             target_info.Y_offset = (short int)(final_target.center.y - MONO_IMAGE_CENTER_Y);
+            target_info.Z_offset = (unsigned char)(final_target.distance);
             hightset_trust_lev = curr_trust_lev;
         }
         target_flag = true;

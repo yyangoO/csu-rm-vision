@@ -27,9 +27,9 @@ private:
     struct termios _opt;
     struct PCData {
         // General data:
-        short int X_offset;         // -32767 - 32767.
-        short int Y_offset;         // -32767 - 32767.
-        unsigned char Z_offset;     // 0 - 255: 0 - 8m
+        int16_t X_offset;     // -32767 - 32767.
+        int16_t Y_offset;     // -32767 - 32767.
+        uint8_t Z_offset;     // 0 - 255: 0 - 8m
         int err_type;
         // Infantry data:
         bool aim_or_rune;       // Aim: 0, Rune: 1.
@@ -45,7 +45,7 @@ private:
 
     };
     RoboData robo_data;
-    char _infantry_pc_msg[5];
+    char _infantry_pc_msg[4];
     char _hero_pc_msg[5];
 };
 

@@ -37,7 +37,7 @@ private:
     int rin_ioctl(int fd, int request, void *arg);
 
 private:
-    struct MapBuffer {
+    struct MapBuffer_t {
         void * ptr;
         unsigned int size;
     };
@@ -48,7 +48,7 @@ private:
     unsigned int _buffer_size;
     unsigned int _buffr_idx;
     unsigned int _curr_frame;
-    MapBuffer * _mb;
+    MapBuffer_t * _mb;
     const char * _video_path;
 };
 
