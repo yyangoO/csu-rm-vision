@@ -15,10 +15,10 @@
 
 class RinVideoCapture {
 public:
-    RinVideoCapture(const char * device, int buffer_size = 1);
-    ~RinVideoCapture();
-    bool start_stream();
-    bool close_stream();
+    void cap_open(const char* device, int buffer_size = 1);
+    void cap_close(void);
+    bool start_stream(void);
+    bool close_stream(void);
     bool set_exposure_time(bool auto_exp, int t);
     bool set_format(unsigned int width, unsigned int height, bool mjpg = 1);
     bool chg_format(int width, int height, bool mjpg = 1);
@@ -48,8 +48,8 @@ private:
     unsigned int _buffer_size;
     unsigned int _buffr_idx;
     unsigned int _curr_frame;
-    MapBuffer_t * _mb;
-    const char * _video_path;
+    MapBuffer_t* _mb;
+    const char* _video_path;
 };
 
 

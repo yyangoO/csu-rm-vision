@@ -25,16 +25,11 @@ private:
     void hsv_proc(cv::Mat &in_img, cv::Mat &out_img, Params params);
     void find_lightbar(cv::Mat &in_img, Params params);
     void find_armor(Params params);
-    void target_detect(const cv::Mat cam_img, Params params);
+    void target_detect(void);
     float distance_slove(cv::Point2f *apex_point, Params params);
     // vector manage:
     void vector_clear(void);
 public:
-    // Debug imgs:
-    cv::Mat hsv_img;
-    cv::Mat grag_img;
-    cv::Mat bin_img;
-    cv::Mat mono_img;
     // order informations:
     struct OrderInfo {
         // General order:
@@ -50,7 +45,7 @@ public:
         // General info:
         int16_t X_offset;     // -32767 - 32767.
         int16_t Y_offset;     // -32767 - 32767.
-        uint8_t Z_offset;     // 0 - 255: 0 - 8m
+        int16_t Z_offset;     // 0 - 32767.
         // Sentry info:
         bool shut_flag;
         char enemy_type;
@@ -93,9 +88,6 @@ private:
     cv::Size track_roi;
     bool target_flag;
 };
-
-
-extern ArmorMono armor_mono;
 
 
 #endif // ARMOR_MONOCULAR_H

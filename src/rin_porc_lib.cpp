@@ -7,11 +7,12 @@
 
 
 #include <math.h>
-#include <mutex>
-#include <signal.h>
-#include <chrono>
-#include <thread>
-#include <memory>
+//#include <mutex>
+//#include <type_traits>
+//#include <signal.h>
+//#include <chrono>
+//#include <thread>
+//#include <memory>
 #include <iostream>
 #include "inc/rin_proc_lib.h"
 
@@ -20,53 +21,56 @@ using namespace std;
 using namespace cv;
 
 
-FrameBuffer::FrameBuffer(size_t size) : _frames(size), \
-                                        _mutexs(size), \
-                                        _tail_idx(0), \
-                                        _head_idx(0), \
-                                        _last_get_time_stamp(0.0) {}
-
-bool FrameBuffer::push(const Frame_t &frame)
+void ImgPorcCon::init(void)
 {
-    const size_t new_head_idx = (_head_idx + 1) % _frames.size();   // Get new head.
-    // Try for 1ms to lock.
-    unique_lock<timed_mutex> lock(_mutexs[new_head_idx], chrono::milliseconds(1));
-    if(!lock.owns_lock())
+    _rin_serial.serrial_cmd();
+    _rin_serial.robo_data.enemy_color = RIN_ENEMY_RED;
+    _rin_serial.robo_data.reso_flag = RIN_RESO_CLOSE;
+//    _rin_serial.msg_read();
+    _params.param_read();
+    _params.BR_HSV_range.enemy_color = _rin_serial.robo_data.enemy_color;
+    _mono_cap.cap_open("/dev/video0", 3);
+    if(_rin_serial.robo_data.reso_flag == RIN_RESO_CLOSE)
     {
-        return false;
+        _mono_cap.set_format(_params.mono_cam_val.mono_cam_close_resolution_x, \
+                             _params.mono_cam_val.mono_cam_close_resolution_y, 1);
+        _mono_cap.set_FPS(_params.mono_cam_val.mono_cam_close_FPS);
     }
-    _frames[new_head_idx] = frame;
-    if(new_head_idx == _tail_idx)
+    else
     {
-        _tail_idx = (_tail_idx + 1) % _frames.size();
+        _mono_cap.set_format(_params.mono_cam_val.mono_cam_far_resolution_x, \
+                             _params.mono_cam_val.mono_cam_far_resolution_y, 1);
+        _mono_cap.set_FPS(_params.mono_cam_val.mono_cam_far_FPS);
     }
-    _head_idx = new_head_idx;
-    return true;
+    _mono_cap.set_exposure_time(false, _params.mono_cam_val.mono_cam_exp_val_l);
+    _mono_cap.start_stream();
 }
 
-bool FrameBuffer::get_latest(Frame_t &frame)
+void ImgPorcCon::info_get(void)
 {
-    volatile const size_t head_idx = _head_idx;
-    // Try for 1ms to lock.
-    unique_lock<timed_mutex> lock(_mutexs[head_idx], chrono::milliseconds(1));
-    if(!lock.owns_lock() || _frames[head_idx].img.empty() || \
-                            _frames[head_idx].time_stamp == _last_get_time_stamp)
-    {
-        return false;
-    }
-    frame = _frames[head_idx];
-    _last_get_time_stamp = _frames[head_idx].time_stamp;
-    return true;
+    _mono_cap >> _mono_img;
 }
 
-ImgProcCon::ImgProcCon(void) : _mono_cap(make_unique<RinVideoCapture>()), \
-                               _frame_buffer(6), \
-                               _rin_serial(make_unique<RinSerial>()), \
-                               _params(make_unique<Params>()), \
-                               _armor_mono(make_unique<ArmorMono>()), \
-                               _rune_mono(make_unique<RuneMono>()),\
-                               _task() {}
+void ImgPorcCon::img_proc(void)
+{
+    _armor_mono.armor_mono_proc(_mono_img, _params);
+}
 
+void ImgPorcCon::robo_cmd(void)
+{
+    _rin_serial._pc_data.X_offset = (int16_t)(_armor_mono.target_info.X_offset);
+    _rin_serial._pc_data.Y_offset = (int16_t)(_armor_mono.target_info.Y_offset);
+    _rin_serial._pc_data.Z_offset = (int16_t)(_armor_mono.target_info.Z_offset);
+//    _rin_serial.msg_read();
+    _rin_serial.msg_send();
+}
+
+void ImgPorcCon::vision_run(void)
+{
+    info_get();
+    img_proc();
+    robo_cmd();
+}
 
 
 // Arm to fill the lightbar's hole.
@@ -88,7 +92,8 @@ void fill_hole(Mat &in_img, Mat &out_img)
 void calibration_img_get(void)
 {
     int idx = 0;
-    RinVideoCapture mono_cap("/dev/video0", 3);
+    RinVideoCapture mono_cap;
+    mono_cap.cap_open("/dev/video0", 3);
     Mat img;
     string path;
     mono_cap.set_format(MONO_IMAGE_X_SIZE, MONO_IMAGE_Y_SIZE, 1);

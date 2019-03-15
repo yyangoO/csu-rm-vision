@@ -23,42 +23,17 @@
 */
 
 
-#include <string>
-
-
-#include <iostream>
-
-#include "inc/includes.h"
-#include "inc/parameters.h"
-#include "inc/armor_monocular.h"
-#include "inc/device.h"
-
-#include "inc/rin_videocapture.h"
-
-
-using namespace cv;
+#include "inc/rin_proc_lib.h"
 
 
 int main(void)
 {
-    RinVideoCapture mono_cap("/dev/video0", 3);
-    Mat mono_img;
-    params.param_init();
-    mono_cap.set_format(MONO_IMAGE_X_SIZE, MONO_IMAGE_Y_SIZE, 1);
-    mono_cap.set_FPS(FPS);
-    mono_cap.set_exposure_time(false, 8);
-    mono_cap.start_stream();
-    rin_serial.serrial_cmd();
+    ImgPorcCon img_proc_con;
+    img_proc_con.init();
     while(1)
     {
-        mono_cap >> mono_img;
-        armor_mono.armor_mono_proc(mono_img, params);
-        rin_serial.msg_send();
-        if(waitKey(1) != -1)
-        {
-            break;
-        }
+        img_proc_con.vision_run();
     }
-    cvDestroyAllWindows();
+//    cvDestroyAllWindows();
     return 0;
 }

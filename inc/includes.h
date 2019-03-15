@@ -28,8 +28,10 @@
 #define DEBUG_IAMGE_TEXT_FONT   FONT_HERSHEY_SIMPLEX
 #define DEBUG_IMAGE_TEXT_PERAL  (15)
 
-#define ENEMY_RED   1
-#define ENEMY_BLUE  0
+#define RIN_ENEMY_RED   true
+#define RIN_ENEMY_BLUE  false
+#define RIN_RESO_CLOSE  true
+#define RIN_RESO_FAR    false
 
 //#define MONO_IMAGE_X_SIZE   1280
 //#define MONO_IMAGE_Y_SIZE   720
@@ -40,6 +42,7 @@
 #define MONO_IMAGE_CENTER_X (319.0f)
 #define MONO_IMAGE_CENTER_Y (239.0f)
 #define FPS 120
+
 
 const cv::Point world_origin_point = cv::Point2f(0.0f, 0.0f);
 

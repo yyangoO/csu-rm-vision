@@ -6,25 +6,25 @@
  */
 
 
-#include "inc/rin_videocapture.h"
-#include <linux/videodev2.h>
-
+#include <string>
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <iostream>
-
+#include <linux/videodev2.h>
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "inc/rin_videocapture.h"
 
 
 using namespace cv;
 
-RinVideoCapture::RinVideoCapture(const char * device, int buffer_size) : _video_path(device)
+void RinVideoCapture::cap_open(const char* device, int buffer_size)
 {
+    _video_path = device;
     _fd = open(device, O_RDWR);
     _buffer_size = buffer_size;
     _buffr_idx = 0;
@@ -42,7 +42,7 @@ void RinVideoCapture::restart_capture(void)
     _curr_frame = 0;
 }
 
-RinVideoCapture::~RinVideoCapture(void)
+void RinVideoCapture::cap_close(void)
 {
     close(_fd);
     delete [] _mb;

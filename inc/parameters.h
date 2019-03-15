@@ -18,62 +18,52 @@
 class Params
 {
 public:
-    void param_init(void);
+    void param_read(void);
 private:
-    void params_xml_read(void);
+    void cam_params_xml_read(void);
+    void proc_params_xml_read(void);
 public:
-    // Global:
-    typedef enum {
-        no_debug = 0,
-        debug_mono_hsv_img = 1,
-        debug_mono_gray_img,
-    } DebugType;
-    DebugType debug_type;
-    typedef enum {
-        no_err = 0,
-        read_params_xml_fail = 1,
-    } ErrType;
-    ErrType err_type;
-    bool enemy_color;   // 1: Red, 0: Blue.
-
     // Monocular camera:
-    int mono_cam_width, mono_cam_height;
-    int mono_cam_exp;   // Monocular camera exposure.
-    cv::Mat mono_cam_matrix;
-    cv::Mat mono_cam_distcoeffs;
-
-    // Binocular camera:
-    int bino_cam_width, bino_cam_height;
-    int bino_cam_exp;   // Binocular camera exposure.
-
-
-
+    struct MonoCamVal_t
+    {
+        int mono_cam_close_resolution_x, mono_cam_close_resolution_y;
+        int mono_cam_close_FPS;
+        int mono_cam_far_resolution_x, mono_cam_far_resolution_y;
+        int mono_cam_far_FPS;
+        int mono_cam_exp_val_l, mono_cam_exp_val_h;
+        cv::Mat mono_cam_matrix_close, mono_cam_distcoeffs_close;
+        cv::Mat mono_cam_matrix_far, mono_cam_distcoeffs_far;
+    };
+    MonoCamVal_t mono_cam_val;
     // Armor:
-    int red_h_l1, red_h_h1;     // Red HSV: H range 1.
-    int red_s_l1, red_s_h1;     // Red HSV: S range 1.
-    int red_v_l1, red_v_h1;     // Red HSV: V range 1.
-    int red_h_l2, red_h_h2;     // Red HSV: H range 2.
-    int red_s_l2, red_s_h2;     // Red HSV: S range 2.
-    int red_v_l2, red_v_h2;     // Red HSV: V range 2.
-
-    int blue_h_l1, blue_h_h1;   // Blue HSV: H range 1.
-    int blue_s_l1, blue_s_h1;   // Blue HSV: S range 1.
-    int blue_v_l1, blue_v_h1;   // Blue HSV: V range 1.
-
-    int gauss_blur_coresize;    // GaussianBlur core size;
-    int oc_oprt_coresize;       // Open and close operating core size;
-
-    float lightbar_length_min;    // Based on this to filter lightbars.
-    float lightbar_length_ratio;  // Based on this to filter lightbars.
-    float lightbar_angle_min;     // Based on this to filter lightbars.
-
-    float armor_angle_diff_min;     // Based on this to match lightbars.
-    float armor_length_retio_min;   // Based on this to match lightbars.
-    float armor_length_mid_y_diff;  // Based on this to match lightbars.
-    float armor_length_mid_x_diff;  // Based on this to match lightbars.
-
-    int cut_img_rate;
+    struct BRHSVRange_t {
+        bool enemy_color;   // Red: 1, blue: 0.
+        int red_h_1[2];     // Red HSV: H range 1.
+        int red_s_1[2];     // Red HSV: S range 1.
+        int red_v_1[2];     // Red HSV: V range 1.
+        int red_h_2[2];     // Red HSV: H range 2.
+        int red_s_2[2];     // Red HSV: S range 2.
+        int red_v_2[2];     // Red HSV: V range 2.
+        int blue_h_1[2];    // Blue HSV: H range 1.
+        int blue_s_1[2];    // Blue HSV: S range 1.
+        int blue_v_1[2];    // Blue HSV: V range 1.
+    };
+    BRHSVRange_t BR_HSV_range;
+    struct ArmorMonoProcVal_t {
+        int gauss_blur_coresize;        // GaussianBlur core size;
+        int oc_oprt_coresize;           // Open and close operating core size;
+        float lightbar_length_min;      // Based on this to filter lightbars.
+        float lightbar_length_ratio;    // Based on this to filter lightbars.
+        float lightbar_angle_min;       // Based on this to filter lightbars.
+        float armor_angle_diff_min;     // Based on this to match lightbars.
+        float armor_length_retio_min;   // Based on this to match lightbars.
+        float armor_length_mid_y_diff;  // Based on this to match lightbars.
+        float armor_length_mid_x_diff;  // Based on this to match lightbars.
+        int cut_img_rate;
+    };
+    ArmorMonoProcVal_t armor_mono_proc_val;
 private:
+    int _mono_cam_num;   // Camera number.
     const std::string proc_params_xml_dir = "../csu_rm_vision_v2.1/data/proc_params.xml";
     const std::string cam_params_xml_dir = "../csu_rm_vision_v2.1/data/cam_params.xml";
 };

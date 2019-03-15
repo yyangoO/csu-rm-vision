@@ -1,14 +1,6 @@
 <?xml version="1.0"?>
 <opencv_storage>
 
-<!-- Global parameters: -->
-<!-- Debug type -->
-<debug_type>1</debug_type>
-<!-- Error type -->
-<err_type>0</err_type>
-<!-- Enemy color -->
-<enemy_color>1</enemy_color>
-
 <!-- Armor parameters: -->
 <!-- Red color HSV range. -->
 <red_h_l1>0</red_h_l1>
