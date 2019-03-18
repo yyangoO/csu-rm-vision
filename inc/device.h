@@ -25,7 +25,7 @@ public:
 private:
     int _serial_fd;
     struct termios _opt;
-    char _infantry_pc_msg[6];
+    char _infantry_pc_msg[8];
     char _hero_pc_msg[5];
     char _sentry_pc_msg[10];
 public:
@@ -37,6 +37,9 @@ public:
         // Sentry data:
         bool shut_flag;     // Shut: 1, Not shut: 0.
         int enemy_type;     // Infantry: 0, Hero: 1, Engineer: 2.
+        // Debug
+        int16_t X_KF;
+        int16_t Y_KF;
     };
     PCData _pc_data;
     struct RoboData {

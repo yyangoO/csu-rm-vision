@@ -43,12 +43,13 @@ public:
     // Final result:
     struct TargetInfo {
         // General info:
-        int16_t X_offset;     // -32767 - 32767.
-        int16_t Y_offset;     // -32767 - 32767.
-        int16_t Z_offset;     // 0 - 32767.
+        float X_offset;
+        float Y_offset;
+        float Z_offset;
         // Sentry info:
         bool shut_flag;
         char enemy_type;
+        // Kalman filter.
     };
     TargetInfo target_info;
 private:

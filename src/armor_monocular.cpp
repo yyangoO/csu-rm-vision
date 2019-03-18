@@ -300,9 +300,9 @@ void ArmorMono::target_detect(void)
         if(curr_trust_lev > hightset_trust_lev)
         {
             final_target = armors.at(armor_idx);
-            target_info.X_offset = static_cast<int16_t>(final_target.center.x - MONO_IMAGE_CENTER_X);
-            target_info.Y_offset = static_cast<int16_t>(final_target.center.y - MONO_IMAGE_CENTER_Y);
-            target_info.Z_offset = static_cast<int16_t>(final_target.distance);
+            target_info.X_offset = final_target.center.x - MONO_IMAGE_CENTER_X;
+            target_info.Y_offset = final_target.center.y - MONO_IMAGE_CENTER_Y;
+            target_info.Z_offset = final_target.distance;
             hightset_trust_lev = curr_trust_lev;
         }
         target_flag = true;
@@ -458,9 +458,9 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
         putText(debug_cam_img, "enemy blue", Point(0, 440), \
                 DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 255), 1.5);
     }
-    debug_xyz = debug_xyz + to_string(target_info.X_offset) + " " \
-                          + to_string(target_info.Y_offset) + " " \
-                          + to_string(target_info.Z_offset);
+    debug_xyz = debug_xyz + to_string((int16_t)target_info.X_offset) + " " \
+                          + to_string((int16_t)target_info.Y_offset) + " " \
+                          + to_string((int16_t)target_info.Z_offset);
     putText(debug_cam_img, debug_xyz, Point(0, 455), \
             DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 255), 1.5);
     debug_target_flag = debug_target_flag + to_string(target_flag);

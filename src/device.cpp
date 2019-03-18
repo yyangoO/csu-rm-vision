@@ -87,8 +87,12 @@ void RinSerial::msg_send(void)
     _infantry_pc_msg[1] = _pc_data.X_offset >> 8;
     _infantry_pc_msg[2] = _pc_data.Y_offset & 0xff;
     _infantry_pc_msg[3] = _pc_data.Y_offset >> 8;
-    _infantry_pc_msg[4] = _pc_data.Z_offset & 0xff;
-    _infantry_pc_msg[5] = _pc_data.Z_offset >> 8;
+    _infantry_pc_msg[4] = _pc_data.X_KF & 0xff;
+    _infantry_pc_msg[5] = _pc_data.X_KF >> 8;
+    _infantry_pc_msg[6] = _pc_data.Y_KF & 0xff;
+    _infantry_pc_msg[7] = _pc_data.Y_KF >> 8;
+//    _infantry_pc_msg[4] = _pc_data.Z_offset & 0xff;
+//    _infantry_pc_msg[5] = _pc_data.Z_offset >> 8;
     write(_serial_fd, (void *)infantry_pc_fh, sizeof(infantry_pc_fh) / sizeof(char));       // Frame header.
     write(_serial_fd, (void *)_infantry_pc_msg, sizeof(_infantry_pc_msg) / sizeof(char));   // Data.
     write(_serial_fd, (void *)infantry_pc_ft, sizeof(infantry_pc_ft) / sizeof(char));       // Frame tail.

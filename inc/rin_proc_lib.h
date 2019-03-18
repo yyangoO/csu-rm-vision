@@ -22,6 +22,27 @@
 #include "inc/device.h"
 
 
+class RinKalmanFilter {
+public:
+    void init(void);
+    void get_info(cv::Mat x_in, float dt) {
+        _x_ = x_in;
+        _dt = dt;
+    }
+    void prediction(void);
+    void measurement_upt(const cv::Mat &z);
+public:
+    float _dt;
+    cv::Mat _x_;
+    cv::Mat _F_;
+    cv::Mat _U_;
+    cv::Mat _P_;
+    cv::Mat _Q_;
+    cv::Mat _H_;
+    cv::Mat _R_;
+    cv::Mat _I_;
+};
+
 class ImgPorcCon
 {
 private:
@@ -30,6 +51,7 @@ private:
     Params _params;
     ArmorMono _armor_mono;
     RuneMono _rune_mono;
+    RinKalmanFilter _rin_KF;
 public:
     void init(void);
     void info_get(void);
@@ -38,6 +60,9 @@ public:
     void vision_run(void);
 private:
     cv::Mat _mono_img;
+    float curr_offset[2];
+    float last_offset[2];
+    float proc_tim;
 };
 
 
