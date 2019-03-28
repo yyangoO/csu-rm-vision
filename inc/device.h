@@ -9,13 +9,22 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
-#include "termios.h"
+#include <termios.h>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/asio/serial_port.hpp>
 #include "inc/includes.h"
 #include "inc/parameters.h"
 
 
 class RinSerial
 {
+//public:
+//    RinSerial(const any_type &port_name);
+//    ~RinSerial(void);
+//    void msg_sned(void);
+//    void msg_read(void);
+//    void handle_read(char buff
 public:
     void serrial_cmd(void);
     void msg_send(void);
@@ -23,12 +32,14 @@ public:
     bool is_open(void) const;
     void close();
 private:
-    int _serial_fd;
-    struct termios _opt;
-    char _infantry_pc_msg[8];
-    char _hero_pc_msg[5];
-    char _sentry_pc_msg[10];
+    void handle_read(uint8_t buff[], boost::system::error_code ec, std::size_t bytes_transferred);
+private:
+//    int _serial_fd;
+//    struct termios _opt;
+    boost::asio::serial_port *_serial_port;
+    uint8_t _pc_msg[8];
 public:
+    boost::asio::io_service serial_iosev;
     struct PCData {
         // General data:
         int16_t X_offset;   // -32767 - 32767.

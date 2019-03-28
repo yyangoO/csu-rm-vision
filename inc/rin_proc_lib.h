@@ -47,7 +47,9 @@ class ImgPorcCon
 {
 private:
     RinVideoCapture _mono_cap;
+public:
     RinSerial _rin_serial;
+private:
     Params _params;
     ArmorMono _armor_mono;
     RuneMono _rune_mono;
