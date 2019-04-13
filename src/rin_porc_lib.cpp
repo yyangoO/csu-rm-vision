@@ -84,16 +84,17 @@ void ImgPorcCon::robo_cmd(void)
     _rin_serial._pc_data.Z_offset = _armor_mono.target_info.Z_offset;
     _rin_serial._pc_data.X_KF = (int16_t)_rin_KF._x_.at<float>(0);
     _rin_serial._pc_data.Y_KF = (int16_t)_rin_KF._x_.at<float>(1);
-    _rin_serial.msg_read();
-//    _rin_serial.msg_send();
+    _rin_serial._pc_data.X_speed = (int16_t)(_rin_KF._x_.at<float>(2) * 1000);
+    _rin_serial._pc_data.Y_speed = (int16_t)(_rin_KF._x_.at<float>(3) * 1000);
+//    _rin_serial.msg_read();
+    _rin_serial.msg_send();
 }
 
 void ImgPorcCon::vision_run(void)
 {
-//    info_get();
-//    img_proc();
-//    robo_cmd();
-      _rin_serial.msg_read();
+    info_get();
+    img_proc();
+    robo_cmd();
 }
 
 

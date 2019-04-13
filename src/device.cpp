@@ -72,9 +72,9 @@ void RinSerial::serrial_cmd(void)
 
 void RinSerial::handle_read(uint8_t buff[], boost::system::error_code ec, std::size_t bytes_transferred)
 {
-    printf("%x\n", buff[4]);
     cout << bytes_transferred << endl;
     cout << "serial read" << endl;
+    serial_iosev.reset();
 }
 
 // Message send.
@@ -88,8 +88,12 @@ void RinSerial::msg_send(void)
     _pc_msg[5] = _pc_data.X_KF >> 8;
     _pc_msg[6] = _pc_data.Y_KF & 0xff;
     _pc_msg[7] = _pc_data.Y_KF >> 8;
-//    _infantry_pc_msg[4] = _pc_data.Z_offset & 0xff;
-//    _infantry_pc_msg[5] = _pc_data.Z_offset >> 8;
+    _pc_msg[8] = _pc_data.X_speed & 0xff;
+    _pc_msg[9] = _pc_data.X_speed >> 8;
+    _pc_msg[10] = _pc_data.Y_speed & 0xff;
+    _pc_msg[11] = _pc_data.Y_speed >> 8;
+    _pc_msg[12] = _pc_data.Z_offset & 0xff;
+    _pc_msg[13] = _pc_data.Z_offset >> 8;
     write(*_serial_port, buffer((void *)rin_pc_fh, sizeof(rin_pc_fh) / sizeof(char)));       // Frame header.
     write(*_serial_port, buffer((void *)_pc_msg, sizeof(_pc_msg) / sizeof(char)));           // Data.
     write(*_serial_port, buffer((void *)rin_pc_ft, sizeof(rin_pc_ft) / sizeof(char)));       // Frame tail.
@@ -99,14 +103,12 @@ void RinSerial::msg_send(void)
 void RinSerial::msg_read(void)
 {
     uint8_t buff[5];
-    boost::system::error_code err;
+//    deadline_timer timer(serial_iosev);
+//    timer.expires_from_now(boost::posix_time::millisec(1));
     memset(buff, 0, 5);
     async_read(*_serial_port, buffer(buff), boost::bind(&RinSerial::handle_read, this, buff, _1, _2));
-//    deadline_timer timer(serial_iosev);
-//    timer.expires_from_now(boost::posix_time::millisec(5));
 //    timer.async_wait(boost::bind(&serial_port::cancel, boost::ref(_serial_port)));
 //    read(*_serial_port, buffer(buff));
-//    _serial_port->read_some(buffer(buff), err);
 //    printf("%x %x %x %x %x\n", buff[0], buff[1], buff[2], buff[3], buff[4]);
 //    printf("%d\n", buff[0]);
 //    cout << buff[0] << endl;

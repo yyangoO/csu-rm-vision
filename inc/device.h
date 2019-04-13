@@ -37,20 +37,21 @@ private:
 //    int _serial_fd;
 //    struct termios _opt;
     boost::asio::serial_port *_serial_port;
-    uint8_t _pc_msg[8];
+    uint8_t _pc_msg[14];
 public:
     boost::asio::io_service serial_iosev;
     struct PCData {
         // General data:
         int16_t X_offset;   // -32767 - 32767.
         int16_t Y_offset;   // -32767 - 32767.
+        int16_t X_KF;       // -32767 - 32767.
+        int16_t Y_KF;       // -32767 - 32767.
+        int16_t X_speed;   // -32767 - 32767.
+        int16_t Y_speed;   // -32767 - 32767.
         int16_t Z_offset;   // 0 - 32767.
         // Sentry data:
         bool shut_flag;     // Shut: 1, Not shut: 0.
         int enemy_type;     // Infantry: 0, Hero: 1, Engineer: 2.
-        // Debug
-        int16_t X_KF;
-        int16_t Y_KF;
     };
     PCData _pc_data;
     struct RoboData {

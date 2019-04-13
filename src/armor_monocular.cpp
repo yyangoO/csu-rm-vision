@@ -19,17 +19,6 @@ using namespace std;
 using namespace cv;
 
 
-// Based on the last time centers to cut the range of image.
-// Input image: RGB; Output image: RGB.
-void ArmorMono::range_cut(Mat &in_img, Mat &out_img, Params params)
-{
-    Mat org_img = in_img;
-    if(target_flag)
-    {
-
-    }
-}
-
 // Used to pick up red and blue from low expusore image.
 // Input image: RGB; Output image: Bin.
 void ArmorMono::hsv_proc(Mat &in_img, Mat &out_img, Params params)
@@ -217,6 +206,14 @@ void ArmorMono::find_armor(Params params)
     {
         for(size_t lb_idx_idx = lb_idx + 1; lb_idx_idx < light_bars.size(); lb_idx_idx++)
         {
+            if((light_bars.at(lb_idx).angle > 1.4835) && (light_bars.at(lb_idx).angle < 1.58))
+                light_bars.at(lb_idx).angle = 1.5708;
+            if((light_bars.at(lb_idx).angle > -1.58) && (light_bars.at(lb_idx).angle < -1.4835))
+                light_bars.at(lb_idx).angle = 1.5708;
+            if((light_bars.at(lb_idx_idx).angle > 1.4835) && (light_bars.at(lb_idx_idx).angle < 1.58))
+                light_bars.at(lb_idx_idx).angle = 1.5708;
+            if((light_bars.at(lb_idx_idx).angle > -1.58) && (light_bars.at(lb_idx_idx).angle < -1.4835))
+                light_bars.at(lb_idx_idx).angle = 1.5708;
             // First based on the angle of lightbars' different to match them.
             if(abs(light_bars.at(lb_idx).angle - light_bars.at(lb_idx_idx).angle) < \
                params.armor_mono_proc_val.armor_angle_diff_min)
@@ -307,6 +304,12 @@ void ArmorMono::target_detect(void)
         }
         target_flag = true;
     }
+    if(target_flag == false)
+    {
+        target_info.X_offset = 0;
+        target_info.Y_offset = 0;
+        target_info.Z_offset = 0;
+    }
 }
 
 // Clear vectors.
@@ -349,7 +352,6 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
 #endif
 
     vector_clear();
-    range_cut(in_img, in_img, params);
     hsv_proc(in_img, in_img, params);
     fill_hole(in_img, in_img);
     GaussianBlur(in_img, in_img, Size(params.armor_mono_proc_val.gauss_blur_coresize, \
