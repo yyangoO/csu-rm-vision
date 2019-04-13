@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<opencv_storage>
+
+<!-- Monocular camera Number -->
+<mono_cam_num>1</mono_cam_num>
+<!-- Monocular camera close resolution X -->
+<mono_cam_close_resolution_x>640</mono_cam_close_resolution_x>
+<!-- Monocular camera close resolution Y -->
+<mono_cam_close_resolution_y>480</mono_cam_close_resolution_y>
+<!-- Monocular camera close FPS -->
+<mono_cam_close_FPS>120</mono_cam_close_FPS>
+<!-- Monocular camera close resolution X -->
+<mono_cam_far_resolution_x>1280</mono_cam_far_resolution_x>
+<!-- Monocular camera close resolution X -->
+<mono_cam_far_resolution_y>720</mono_cam_far_resolution_y>
+<!-- Monocular camera far FPS -->
+<mono_cam_far_FPS>60</mono_cam_far_FPS>
+<!-- Monocular camera close resolution X -->
+<mono_cam_exp_val_l>15</mono_cam_exp_val_l>
+<!-- Monocular camera close resolution X -->
+<mono_cam_exp_val_h>15</mono_cam_exp_val_h>
+
+<!-- Monocular camera matrix 1280 1 -->
+<mono_cam_matrix_far_1 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    2.0093767637811659e+03 0. 6.2172968973045761e+02 0.
+    2.0097579781539550e+03 3.4605641541287878e+02 0. 0. 1.</data></mono_cam_matrix_far_1>
+<!-- Monocular camera discoeffs matrix 1280 1 -->
+<mono_cam_distcoeffs_far_1 type_id="opencv-matrix">
+  <rows>5</rows>
+  <cols>1</cols>
+  <dt>d</dt>
+  <data>
+    -2.6403407936305201e-01 -8.1246687465019096e-01 0. 0. 0.</data></mono_cam_distcoeffs_far_1>
+
+<!-- Monocular camera matrix 640 1 -->
+<mono_cam_matrix_close_1 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    1.002737825429971e+03 0. 3.041233664373974e+02 0.
+    1.003428926958954e+03 2.351097482934144e+02 0. 0. 1.</data></mono_cam_matrix_close_1>
+<!-- Monocular camera discoeffs matrix 640 1 -->
+<mono_cam_distcoeffs_close_1 type_id="opencv-matrix">
+  <rows>5</rows>
+  <cols>1</cols>
+  <dt>d</dt>
+  <data>
+    -0.293382992895539 -0.831287625451708 0. 0. 0.</data></mono_cam_distcoeffs_close_1>
+
+</opencv_storage>
