@@ -49,7 +49,8 @@ void ImgPorcCon::info_get(void)
 
 void ImgPorcCon::img_proc(void)
 {
-    _armor_mono.armor_mono_proc(_mono_img, _params);
+//    _armor_mono.armor_mono_proc(_mono_img, _params);
+    _rune_mono.rune_mono_proc(_mono_img, _params);
 }
 
 void ImgPorcCon::robo_cmd(void)
@@ -92,9 +93,9 @@ void ImgPorcCon::robo_cmd(void)
 
 void ImgPorcCon::vision_run(void)
 {
-    info_get();
+//    info_get();
     img_proc();
-    robo_cmd();
+//    robo_cmd();
 }
 
 
