@@ -1,5 +1,6 @@
 # CSU-RM-Vision（中南大学RoboMaster视觉2019）
-* Author：杨洋
+ Author：杨洋
+-
 
 核心算法
 -
