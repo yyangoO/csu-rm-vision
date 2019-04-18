@@ -8,7 +8,8 @@
 * 由于摄像头成本导致的灯柱过爆，红蓝色中间泛白
 * 大符激活后的扇叶是一个巨大的红蓝封闭轮廓，直接填充后是一个非常明显的特征
 
-`void fill_hole(Mat &in_img, Mat &out_img)
+```C++
+void fill_hole(Mat &in_img, Mat &out_img)
 {
     Mat org_img = in_img;
     Mat cut_img;
@@ -18,4 +19,4 @@
     floodFill(temp, Point(0, 0), Scalar(255));
     temp(Range(1, size.height + 1), Range(1, size.width + 1)).copyTo(cut_img);
     out_img = org_img | (~cut_img);
-}`
+}
