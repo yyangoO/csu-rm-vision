@@ -16,7 +16,7 @@
 <!-- Monocular camera far FPS -->
 <mono_cam_far_FPS>60</mono_cam_far_FPS>
 <!-- Monocular camera close resolution X -->
-<mono_cam_exp_val_l>15</mono_cam_exp_val_l>
+<mono_cam_exp_val_l>12</mono_cam_exp_val_l>
 <!-- Monocular camera close resolution X -->
 <mono_cam_exp_val_h>15</mono_cam_exp_val_h>
 

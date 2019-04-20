@@ -18,14 +18,17 @@ using namespace cv;
 
 void ImgPorcCon::init(void)
 {
+    // Hardware initialization.
     _rin_serial.serrial_cmd();
-    _rin_serial.robo_data.enemy_color = RIN_ENEMY_RED;
-    _rin_serial.robo_data.reso_flag = RIN_RESO_CLOSE;
-//    _rin_serial.msg_read();
+    _mono_cap.cap_open("/dev/video0", 3);
+
+    // parameters and functions initialization.
     _params.param_read();
     _rin_KF.init();
+
+    // Functions's run parameters initialization.
+    _rin_serial.vision_init();
     _params.BR_HSV_range.enemy_color = _rin_serial.robo_data.enemy_color;
-    _mono_cap.cap_open("/dev/video0", 3);
     if(_rin_serial.robo_data.reso_flag == RIN_RESO_CLOSE)
     {
         _mono_cap.set_format(_params.mono_cam_val.mono_cam_close_resolution_x, \
@@ -38,6 +41,8 @@ void ImgPorcCon::init(void)
                              _params.mono_cam_val.mono_cam_far_resolution_y, 1);
         _mono_cap.set_FPS(_params.mono_cam_val.mono_cam_far_FPS);
     }
+
+    // Hardware set and run.
     _mono_cap.set_exposure_time(false, _params.mono_cam_val.mono_cam_exp_val_l);
     _mono_cap.start_stream();
 }
@@ -49,8 +54,8 @@ void ImgPorcCon::info_get(void)
 
 void ImgPorcCon::img_proc(void)
 {
-//    _armor_mono.armor_mono_proc(_mono_img, _params);
-    _rune_mono.rune_mono_proc(_mono_img, _params);
+    _armor_mono.armor_mono_proc(_mono_img, _params);
+//    _rune_mono.rune_mono_proc(_mono_img, _params);
 }
 
 void ImgPorcCon::robo_cmd(void)
@@ -93,7 +98,7 @@ void ImgPorcCon::robo_cmd(void)
 
 void ImgPorcCon::vision_run(void)
 {
-//    info_get();
+    info_get();
     img_proc();
 //    robo_cmd();
 }
@@ -175,16 +180,6 @@ void RinKalmanFilter::prediction(void)
     Mat Ft;
     _x_ = _F_* _x_ + _U_;
     transpose(_F_, Ft);
-//    cout <<endl << "second:" << endl;
-//    for(int idx = 0; idx < Ft.rows; idx++)
-//    {
-//        for(int c_idx = 0; c_idx < Ft.cols; c_idx++)
-//        {
-//            cout << Ft.at<float>(idx, c_idx) << " ";
-//        }
-//        cout << endl;
-//    }
-//    cout << endl;
     _P_ = _F_ * _P_ * Ft + _Q_;
 }
 

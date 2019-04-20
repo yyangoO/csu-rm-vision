@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <opencv_storage>
 
-<!-- Armor parameters: -->
 <!-- Red color HSV range. -->
 <red_h_l1>0</red_h_l1>
 <red_h_h1>10</red_h_h1>
@@ -22,6 +21,8 @@
 <blue_s_h1>255</blue_s_h1>
 <blue_v_l1>46</blue_v_l1>
 <blue_v_h1>255</blue_v_h1>
+
+<!-- Armor parameters: -->
 <!-- GaussianBlur core size -->
 <gauss_blur_coresize>3</gauss_blur_coresize>
 <!-- Open and close operating core size -->
@@ -43,5 +44,21 @@
 <!-- The rate of cutting image enlarge -->
 <cut_img_rate>30</cut_img_rate>
 
+
+<!-- Rune parameters: -->
+<!-- Rune gauss blur coresize -->
+<rune_gauss_blur_coresize>3</rune_gauss_blur_coresize>
+<!-- Rune fan's open close element size -->
+<rune_fan_oc_element_coresize>3</rune_fan_oc_element_coresize>
+<!-- Rune target's open close element size -->
+<rune_tar_oc_element_coresize>15</rune_tar_oc_element_coresize>
+<!-- Rune target's pixel size low -->
+<rune_target_p_l>2000.0</rune_target_p_l>
+<!-- Rune target's pixel size high -->
+<rune_target_p_h>3000.0</rune_target_p_h>
+<!-- Rune unactived fan's pixel size retio -->
+<rune_activing_fan_p_retio>1.5</rune_activing_fan_p_retio>
+<!-- Rune actived fan's pixel size retio -->
+<rune_actived_fan_p_retio>3.0</rune_actived_fan_p_retio>
 
 </opencv_storage>

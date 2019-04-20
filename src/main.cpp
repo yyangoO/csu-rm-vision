@@ -34,7 +34,5 @@ int main(void)
     {
         img_proc_con.vision_run();
     }
-//    img_proc_con._rin_serial.serial_iosev.run();
-//    cvDestroyAllWindows();
     return 0;
 }

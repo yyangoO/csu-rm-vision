@@ -6,21 +6,15 @@
  */
 
 
-//#include <unistd.h>
-//#include <fcntl.h>
-//#include <termios.h>
 #include <iostream>
 #include <stdio.h>
-//#include <stdlib.h>
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <errno.h>
+#include <chrono>
 #include "inc/device.h"
 #include "inc/armor_monocular.h"
 
 
-#define SERIAL_BAUDRATE 115200
-#define DEVICE_PORT "/dev/ttyUSB0"
+#define SERIAL_BAUDRATE     (115200)
+#define DEVICE_PORT         "/dev/ttyUSB0"
 
 
 #define RIN_PC_CMD     (0x03)
@@ -45,36 +39,6 @@ void RinSerial::serrial_cmd(void)
     _serial_port->set_option(serial_port::parity(serial_port::parity::none));
     _serial_port->set_option(serial_port::stop_bits(serial_port::stop_bits::one));
     _serial_port->set_option(serial_port::character_size(8));
-//    _serial_fd = open(DEVICE_PORT, O_RDWR | O_NOCTTY | O_NONBLOCK);
-//    if(_serial_fd == -1)
-//    {
-//        return;
-//    }
-//    tcgetattr(_serial_fd, &_opt);
-//    cfmakeraw(&_opt);
-//    cfsetispeed(&_opt, SERIAL_BAUDRATE);
-//    cfsetospeed(&_opt, SERIAL_BAUDRATE);
-//    tcsetattr(_serial_fd, TCSANOW, &_opt);
-//    if(_serial_fd == -1)
-//    {
-//        return;
-//    }
-//    tcflush(_serial_fd, TCIOFLUSH);
-//    if(_serial_fd == -1)
-//    {
-//        return;
-//    }
-//    else
-//    {
-//        return;
-//    }
-}
-
-void RinSerial::handle_read(uint8_t buff[], boost::system::error_code ec, std::size_t bytes_transferred)
-{
-    cout << bytes_transferred << endl;
-    cout << "serial read" << endl;
-    serial_iosev.reset();
 }
 
 // Message send.
@@ -99,18 +63,38 @@ void RinSerial::msg_send(void)
     write(*_serial_port, buffer((void *)rin_pc_ft, sizeof(rin_pc_ft) / sizeof(char)));       // Frame tail.
 }
 
+// Vision read.
+void RinSerial::vision_init(void)
+{
+    char buff[5];
+    while(1)
+    {
+        memset(buff, 0, 5);
+        read(*_serial_port, buffer(buff));
+        if((buff[0] == rin_robo_fh[0]) && \
+           (buff[1] == rin_robo_fh[1]) && \
+           (buff[3] == rin_robo_ft[0]) && \
+           (buff[4] == rin_robo_ft[1]))
+        {
+            RinSerial::robo_data.init_flag = (buff[2] >> 7) & 0x01;
+            RinSerial::robo_data.set_flag = (buff[2] >> 6) & 0x01;
+            RinSerial::robo_data.debug_flag = (buff[2] >> 7) & 0x01;
+            RinSerial::robo_data.enemy_color = (buff[2] >> 7) & 0x01;
+            RinSerial::robo_data.aim_or_rune = (buff[2] >> 7) & 0x01;
+            RinSerial::robo_data.reso_flag = (buff[2] >> 7) & 0x01;
+            RinSerial::robo_data.bullet_type = (buff[2] >> 7) & 0x01;
+            break;
+        }
+        serial_iosev.run();
+    }
+}
+
 // Message read.
 void RinSerial::msg_read(void)
 {
     uint8_t buff[5];
-//    deadline_timer timer(serial_iosev);
-//    timer.expires_from_now(boost::posix_time::millisec(1));
+    const auto t1 = chrono::high_resolution_clock::now();
     memset(buff, 0, 5);
-    async_read(*_serial_port, buffer(buff), boost::bind(&RinSerial::handle_read, this, buff, _1, _2));
-//    timer.async_wait(boost::bind(&serial_port::cancel, boost::ref(_serial_port)));
-//    read(*_serial_port, buffer(buff));
-//    printf("%x %x %x %x %x\n", buff[0], buff[1], buff[2], buff[3], buff[4]);
-//    printf("%d\n", buff[0]);
-//    cout << buff[0] << endl;
+    read(*_serial_port, buffer(buff));
     serial_iosev.run();
 }
