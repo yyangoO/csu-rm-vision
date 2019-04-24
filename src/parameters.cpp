@@ -94,6 +94,7 @@ void Params::proc_params_xml_read(void)
     proc_params_fs["armor_length_mid_y_diff"] >> armor_mono_proc_val.armor_length_mid_y_diff;
     proc_params_fs["armor_length_mid_x_diff"] >> armor_mono_proc_val.armor_length_mid_x_diff;
     proc_params_fs["cut_img_rate"] >> armor_mono_proc_val.cut_img_rate;
+    proc_params_fs["armor_retio_simita"] >> armor_mono_proc_val.armor_retio_simita;
     proc_params_fs.release();
 }
 

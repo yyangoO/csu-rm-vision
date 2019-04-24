@@ -17,14 +17,6 @@
 #include "opencv2/imgproc/imgproc.hpp"
 
 
-#define INFANTRY_MODE
-//#define HERO_MODE
-//#define SENTRY_MODE
-
-
-#define DEBUG
-//#define RELEASE
-
 #define DEBUG_IAMGE_TEXT_FONT   FONT_HERSHEY_SIMPLEX
 #define DEBUG_IMAGE_TEXT_PERAL  (15)
 

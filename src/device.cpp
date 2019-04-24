@@ -58,6 +58,10 @@ void RinSerial::msg_send(void)
     _pc_msg[11] = _pc_data.Y_speed >> 8;
     _pc_msg[12] = _pc_data.Z_offset & 0xff;
     _pc_msg[13] = _pc_data.Z_offset >> 8;
+    if(robo_cmdmsg_flag == true)
+        _pc_msg[14] = 0xff;
+    else
+        _pc_msg[14] = 0x00;
     write(*_serial_port, buffer((void *)rin_pc_fh, sizeof(rin_pc_fh) / sizeof(char)));       // Frame header.
     write(*_serial_port, buffer((void *)_pc_msg, sizeof(_pc_msg) / sizeof(char)));           // Data.
     write(*_serial_port, buffer((void *)rin_pc_ft, sizeof(rin_pc_ft) / sizeof(char)));       // Frame tail.
@@ -67,34 +71,42 @@ void RinSerial::msg_send(void)
 void RinSerial::vision_init(void)
 {
     char buff[5];
-    while(1)
-    {
-        memset(buff, 0, 5);
-        read(*_serial_port, buffer(buff));
-        if((buff[0] == rin_robo_fh[0]) && \
-           (buff[1] == rin_robo_fh[1]) && \
-           (buff[3] == rin_robo_ft[0]) && \
-           (buff[4] == rin_robo_ft[1]))
-        {
+//    while(1)
+//    {
+//        memset(buff, 0, 5);
+//        read(*_serial_port, buffer(buff));
+//        if((buff[0] == rin_robo_fh[0]) && \
+//           (buff[1] == rin_robo_fh[1]) && \
+//           (buff[3] == rin_robo_ft[0]) && \
+//           (buff[4] == rin_robo_ft[1]))
+//        {
             RinSerial::robo_data.init_flag = (buff[2] >> 7) & 0x01;
             RinSerial::robo_data.set_flag = (buff[2] >> 6) & 0x01;
-            RinSerial::robo_data.debug_flag = (buff[2] >> 7) & 0x01;
-            RinSerial::robo_data.enemy_color = (buff[2] >> 7) & 0x01;
-            RinSerial::robo_data.aim_or_rune = (buff[2] >> 7) & 0x01;
-            RinSerial::robo_data.reso_flag = (buff[2] >> 7) & 0x01;
-            RinSerial::robo_data.bullet_type = (buff[2] >> 7) & 0x01;
-            break;
-        }
-        serial_iosev.run();
-    }
+            RinSerial::robo_data.debug_flag = (buff[2] >> 5) & 0x01;
+            RinSerial::robo_data.enemy_color = (buff[2] >> 4) & 0x01;
+            RinSerial::robo_data.aim_or_rune = (buff[2] >> 3) & 0x01;
+            RinSerial::robo_data.reso_flag = (buff[2] >> 2) & 0x01;
+            RinSerial::robo_data.armor_type = (buff[2] >> 1) & 0x01;
+
+            RinSerial::robo_data.init_flag = 0;
+            RinSerial::robo_data.set_flag = 0;
+            RinSerial::robo_data.debug_flag = 1;
+            RinSerial::robo_data.enemy_color = 1;
+            RinSerial::robo_data.aim_or_rune = 0;
+            RinSerial::robo_data.reso_flag = 0;
+            RinSerial::robo_data.armor_type = 0;
+//            break;
+//        }
+//        serial_iosev.run();
+//    }
 }
 
 // Message read.
 void RinSerial::msg_read(void)
 {
     uint8_t buff[5];
-    const auto t1 = chrono::high_resolution_clock::now();
+//    const auto t1 = chrono::high_resolution_clock::now();
     memset(buff, 0, 5);
-    read(*_serial_port, buffer(buff));
+//    read(*_serial_port, buffer(buff));
     serial_iosev.run();
 }

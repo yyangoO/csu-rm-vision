@@ -28,19 +28,21 @@
 <!-- Open and close operating core size -->
 <oc_oprt_coresize>3</oc_oprt_coresize>
 <!-- Based on lightbar's length to filter lightbars -->
-<lightbar_length_min>2.0</lightbar_length_min>
+<lightbar_length_min>25.0</lightbar_length_min>
 <!-- Based on lightbar's length and width's ratio to filter -->
 <lightbar_length_ratio>2.0</lightbar_length_ratio>
 <!-- Based on lightbar's slope to filter -->
-<lightbar_angle_min>0.785</lightbar_angle_min>
+<lightbar_angle_min>1.22</lightbar_angle_min>
 <!-- Based on lightbar's angle different to pair them -->
-<armor_angle_diff_min>0.3925</armor_angle_diff_min>
+<armor_angle_diff_min>0.174</armor_angle_diff_min>
 <!-- Based on lightbar's length retio to pair them -->
-<armor_length_retio_min>0.2</armor_length_retio_min>
+<armor_length_retio_min>0.1</armor_length_retio_min>
 <!-- Based on lightbar's middle point'y to pair them -->
-<armor_length_mid_y_diff>0.7</armor_length_mid_y_diff>
+<armor_length_mid_y_diff>0.4</armor_length_mid_y_diff>
 <!-- Based on lightbar's middle point'x to pair them -->
-<armor_length_mid_x_diff>1.3</armor_length_mid_x_diff>
+<armor_length_mid_x_diff>3.0</armor_length_mid_x_diff>
+<!-- Armor's lightbar's retio's simita filter -->
+<armor_retio_simita>1.570</armor_retio_simita>
 <!-- The rate of cutting image enlarge -->
 <cut_img_rate>30</cut_img_rate>
 

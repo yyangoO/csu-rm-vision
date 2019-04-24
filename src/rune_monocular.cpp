@@ -23,7 +23,7 @@ void RuneMono::hsv_proc(Mat &in_img, Mat &out_img, Params params)
     cvtColor(in_img, hsv_img, COLOR_BGR2HSV);
     filter_img_1 = Mat(hsv_img.rows, hsv_img.cols, CV_8UC3, Scalar(255, 255, 255));
     filter_img_2 = Mat(hsv_img.rows, hsv_img.cols, CV_8UC3, Scalar(255, 255, 255));
-    if(params.BR_HSV_range.enemy_color == RIN_ENEMY_RED)
+    if(params.robo_cmd.enemy_color == RIN_ENEMY_RED)
     {
         inRange(hsv_img, \
                 Scalar(params.BR_HSV_range.red_h_1[0], params.BR_HSV_range.red_s_1[0], params.BR_HSV_range.red_s_1[0]), \
@@ -35,7 +35,7 @@ void RuneMono::hsv_proc(Mat &in_img, Mat &out_img, Params params)
                 filter_img_2);
         out_img = filter_img_1 | filter_img_2;
     }
-    else if(params.BR_HSV_range.enemy_color == RIN_ENEMY_BLUE)
+    else if(params.robo_cmd.enemy_color == RIN_ENEMY_BLUE)
     {
         inRange(hsv_img, \
                 Scalar(params.BR_HSV_range.blue_h_1[0], params.BR_HSV_range.blue_s_1[0], params.BR_HSV_range.blue_v_1[0]), \
@@ -48,8 +48,6 @@ void RuneMono::hsv_proc(Mat &in_img, Mat &out_img, Params params)
 
 void RuneMono::rune_mono_proc(Mat &in_img, Params params)
 {
-//    Mat img;
-//    Mat img, org_img, roi;
 //    Mat oc_element, oc_elemet_2;
 //    RotatedRect rotated_rect, target;
 //    Rect rectx;
@@ -57,10 +55,8 @@ void RuneMono::rune_mono_proc(Mat &in_img, Params params)
 //    vector<Vec4i> hierachy, target_hierachy;
 //    Point2f rect_p[4], target_p[4], final_mid_p[2];
 //    float retated_area, contours_area, target_area;
+//    const Mat org_img = in_img.clone();
 
-//    VideoCapture cap("F:\\project\\CV\\vision_run\\风车神符模拟击打短版.mp4");
-//    cvNamedWindow("org", CV_WINDOW_AUTOSIZE);
-//    cvNamedWindow("out", CV_WINDOW_AUTOSIZE);
 //    while (1)
 //    {
 //        cap >> img;

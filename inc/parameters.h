@@ -37,7 +37,6 @@ public:
     MonoCamVal_t mono_cam_val;
     // Armor:
     struct BRHSVRange_t {
-        bool enemy_color;   // Red: 1, blue: 0.
         int red_h_1[2];     // Red HSV: H range 1.
         int red_s_1[2];     // Red HSV: S range 1.
         int red_v_1[2];     // Red HSV: V range 1.
@@ -59,9 +58,19 @@ public:
         float armor_length_retio_min;   // Based on this to match lightbars.
         float armor_length_mid_y_diff;  // Based on this to match lightbars.
         float armor_length_mid_x_diff;  // Based on this to match lightbars.
+        float armor_retio_simita;
         int cut_img_rate;
     };
     ArmorMonoProcVal_t armor_mono_proc_val;
+    struct Robo_CMD_t {
+        bool init_flag;
+        bool set_flag;
+        bool debug_flag;
+        bool enemy_color;
+        bool aim_or_rune;
+        bool armor_type;
+    };
+    Robo_CMD_t robo_cmd;
 private:
     int _mono_cam_num;   // Camera number.
     const std::string proc_params_xml_dir = "../csu_rm_vision_v2.1/data/proc_params.xml";

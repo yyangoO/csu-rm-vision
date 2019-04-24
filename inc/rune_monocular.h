@@ -21,6 +21,9 @@ public:
     void rune_mono_proc(cv::Mat &in_img, Params params);
 private:
     void hsv_proc(cv::Mat &in_img, cv::Mat &out_img, Params params);
+private:
+    cv::Mat oc_element_1;
+    cv::Mat oc_element_2;
 };
 
 #endif // RUNE_MONOCULAR_H

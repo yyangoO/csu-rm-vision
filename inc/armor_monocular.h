@@ -14,6 +14,7 @@
 
 #include "inc/includes.h"
 #include "inc/parameters.h"
+#include "sys/time.h"
 
 
 class ArmorMono

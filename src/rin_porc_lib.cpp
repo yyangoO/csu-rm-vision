@@ -28,7 +28,9 @@ void ImgPorcCon::init(void)
 
     // Functions's run parameters initialization.
     _rin_serial.vision_init();
-    _params.BR_HSV_range.enemy_color = _rin_serial.robo_data.enemy_color;
+    _params.robo_cmd.enemy_color = _rin_serial.robo_data.enemy_color;
+    _params.robo_cmd.debug_flag = _rin_serial.robo_data.debug_flag;
+
     if(_rin_serial.robo_data.reso_flag == RIN_RESO_CLOSE)
     {
         _mono_cap.set_format(_params.mono_cam_val.mono_cam_close_resolution_x, \
@@ -100,7 +102,7 @@ void ImgPorcCon::vision_run(void)
 {
     info_get();
     img_proc();
-//    robo_cmd();
+    robo_cmd();
 }
 
 
