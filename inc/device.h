@@ -9,10 +9,8 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
-#include <termios.h>
-#include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/asio/serial_port.hpp>
+
+#include "termios.h"
 #include "inc/includes.h"
 #include "inc/parameters.h"
 
@@ -23,17 +21,14 @@ public:
     void serrial_cmd(void);
     void msg_send(void);
     void msg_read(void);
-    void serial_run(void);
     void vision_init(void);
-    bool is_open(void) const;
     void close();
 private:
-    void handle_rad(char buff[], boost::system::error_code ec, std::size_t bytes_transferred);
-private:
-    boost::asio::serial_port *_serial_port;
-    char _pc_msg[15];
+    int _serial_fd;
+    struct termios _opt;
+    char _pc_msg[14];
 public:
-    boost::asio::io_service serial_iosev;
+
     struct PCData {
         // General data:
         int16_t X_offset;   // -32767 - 32767.

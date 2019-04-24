@@ -94,15 +94,25 @@ void ImgPorcCon::robo_cmd(void)
     _rin_serial._pc_data.Y_KF = (int16_t)_rin_KF._x_.at<float>(1);
     _rin_serial._pc_data.X_speed = (int16_t)(_rin_KF._x_.at<float>(2) * 1000);
     _rin_serial._pc_data.Y_speed = (int16_t)(_rin_KF._x_.at<float>(3) * 1000);
-//    _rin_serial.msg_read();
-    _rin_serial.msg_send();
+    _rin_serial.msg_read();
+//    _rin_serial.msg_send();
 }
 
 void ImgPorcCon::vision_run(void)
 {
+    struct timeval tv1, tv2;
+    struct timezone tz1, tz2;
+    float debug_proc_tim_val;
+    gettimeofday(&tv1, &tz1);
     info_get();
     img_proc();
     robo_cmd();
+    _params.robo_cmd.enemy_color = _rin_serial.robo_data.enemy_color;
+    _params.robo_cmd.debug_flag = _rin_serial.robo_data.debug_flag;
+    gettimeofday(&tv2, &tz2);
+    debug_proc_tim_val = tv2.tv_sec * 1000 + tv2.tv_usec / 1000 - \
+                         tv1.tv_sec * 1000 - tv1.tv_usec / 1000;
+    cout << debug_proc_tim_val << endl;
 }
 
 
