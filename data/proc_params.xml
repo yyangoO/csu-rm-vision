@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<opencv_storage>
+
+<!-- Red color HSV range. -->
+<red_h_l1>0</red_h_l1>
+<red_h_h1>10</red_h_h1>
+<red_s_l1>43</red_s_l1>
+<red_s_h1>255</red_s_h1>
+<red_v_l1>46</red_v_l1>
+<red_v_h1>255</red_v_h1>
+<red_h_l2>156</red_h_l2>
+<red_h_h2>180</red_h_h2>
+<red_s_l2>43</red_s_l2>
+<red_s_h2>255</red_s_h2>
+<red_v_l2>46</red_v_l2>
+<red_v_h2>255</red_v_h2>
+<!-- Blue color HSV range. -->
+<blue_h_l1>100</blue_h_l1>
+<blue_h_h1>124</blue_h_h1>
+<blue_s_l1>43</blue_s_l1>
+<blue_s_h1>255</blue_s_h1>
+<blue_v_l1>46</blue_v_l1>
+<blue_v_h1>255</blue_v_h1>
+
+<!-- Armor parameters: -->
+<!-- GaussianBlur core size -->
+<gauss_blur_coresize>3</gauss_blur_coresize>
+<!-- Open and close operating core size -->
+<oc_oprt_coresize>3</oc_oprt_coresize>
+<!-- Based on lightbar's length to filter lightbars -->
+<lightbar_length_min>12.0</lightbar_length_min>
+<!-- Based on lightbar's length and width's ratio to filter -->
+<lightbar_length_ratio>2.0</lightbar_length_ratio>
+<!-- Based on lightbar's slope to filter -->
+<lightbar_angle_min>1.22</lightbar_angle_min>
+<!-- Based on lightbar's angle different to pair them -->
+<armor_angle_diff_min>0.174</armor_angle_diff_min>
+<!-- Based on lightbar's length retio to pair them -->
+<armor_length_retio_min>0.15</armor_length_retio_min>
+<!-- Based on lightbar's middle point'y to pair them -->
+<armor_length_mid_y_diff>0.40</armor_length_mid_y_diff>
+<!-- Based on lightbar's middle point'x to pair them -->
+<armor_length_mid_x_diff>3.0</armor_length_mid_x_diff>
+<!-- Armor's lightbar's retio's simita filter -->
+<armor_retio_simita>1.570</armor_retio_simita>
+<!-- The rate of cutting image enlarge -->
+<cut_img_rate>30</cut_img_rate>
+
+
+<!-- Rune parameters: -->
+<!-- Rune gauss blur coresize -->
+<rune_gauss_blur_coresize>3</rune_gauss_blur_coresize>
+<!-- Rune fan's open close element size -->
+<rune_fan_oc_element_coresize>3</rune_fan_oc_element_coresize>
+<!-- Rune target's open close element size -->
+<rune_tar_oc_element_coresize>15</rune_tar_oc_element_coresize>
+<!-- Rune target's pixel size low -->
+<rune_actived_fan_p_l>2000.0</rune_actived_fan_p_l>
+<!-- Rune target's pixel size high -->
+<rune_actived_fan_p_h>3000.0</rune_actived_fan_p_h>
+<!-- Rune unactived fan's pixel size low -->
+<rune_activing_fan_p_low>1000.0</rune_activing_fan_p_low>
+<!-- Rune unactived fan's pixel size high -->
+<rune_activing_fan_p_high>1500.0</rune_activing_fan_p_high>
+<!-- Rune actived fan's pixel size low -->
+<rune_target_p_low>500.0</rune_target_p_low>
+<!-- Rune actived fan's pixel size high -->
+<rune_target_p_high>800.0</rune_target_p_high>
+
+</opencv_storage>
