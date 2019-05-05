@@ -104,10 +104,10 @@ void Params::proc_params_xml_read(void)
     proc_params_fs["rune_tar_oc_element_coresize"] >> rune_mono_proc_val.target_oc_element_coresize;
     proc_params_fs["rune_actived_fan_p_l"] >> rune_mono_proc_val.actived_fan_pixel_l;
     proc_params_fs["rune_actived_fan_p_h"] >> rune_mono_proc_val.actived_fan_pixel_h;
-    proc_params_fs["rune_activing_fan_p_low"] >> rune_mono_proc_val.activing_fan_pixel_l;
-    proc_params_fs["rune_activing_fan_p_high"] >> rune_mono_proc_val.activing_fan_pixel_h;
-    proc_params_fs["rune_target_p_low"] >> rune_mono_proc_val.target_fan_pixel_l;
-    proc_params_fs["rune_target_p_high"] >> rune_mono_proc_val.target_fan_pixel_h;
+    proc_params_fs["rune_activing_fan_retio_l"] >> rune_mono_proc_val.activing_fan_retio_l;
+    proc_params_fs["rune_activing_fan_retio_h"] >> rune_mono_proc_val.activing_fan_retio_h;
+    proc_params_fs["rune_target_p_l"] >> rune_mono_proc_val.target_fan_pixel_l;
+    proc_params_fs["rune_target_p_h"] >> rune_mono_proc_val.target_fan_pixel_h;
     proc_params_fs.release();
 }
 

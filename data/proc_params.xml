@@ -59,9 +59,9 @@
 <!-- Rune target's pixel size high -->
 <rune_actived_fan_p_h>3000.0</rune_actived_fan_p_h>
 <!-- Rune unactived fan's pixel size low -->
-<rune_activing_fan_p_low>1000.0</rune_activing_fan_p_low>
+<rune_activing_fan_retio_l>0.3</rune_activing_fan_retio_l>
 <!-- Rune unactived fan's pixel size high -->
-<rune_activing_fan_p_high>1500.0</rune_activing_fan_p_high>
+<rune_activing_fan_retio_h>0.6</rune_activing_fan_retio_h>
 <!-- Rune actived fan's pixel size low -->
 <rune_target_p_low>500.0</rune_target_p_low>
 <!-- Rune actived fan's pixel size high -->

@@ -50,8 +50,8 @@ void RuneMono::rune_mono_proc(Mat &in_img, Params params)
 {
     vector<vector<Point>> fan_contours, target_contours;
     vector<Vec4i> fan_hierachy, target_hierachy;
-    float contours_area = 0;
     Mat img = in_img.clone();
+    Mat debug_img = in_img.clone();
 
     hsv_proc(img, img, params);
     fill_hole(img, img);
@@ -72,11 +72,18 @@ void RuneMono::rune_mono_proc(Mat &in_img, Params params)
         fan_roi.points(fan_rect_p);
         fan_area = (float)(fan_roi.size.height * fan_roi.size.width);
         contours_area = (float)(contourArea(fan_contours[contours_idx]));
-        if (fan_area > 20000.0f)
+
+        if(params.robo_cmd.debug_flag)
         {
-            if ((contours_area / fan_area) < 0.6)
+            cout << "FAN ROI AREA: No." << contours_idx << fan_area << endl;
+            cout << "CONTOURS ROI AREA: No." << contours_idx << fan_area << endl;
+        }
+
+        if ((fan_area > params.rune_mono_proc_val.actived_fan_pixel_l) && \
+            (fan_area < params.rune_mono_proc_val.actived_fan_pixel_h))
+        {
+            if ((contours_area / fan_area) < params.rune_mono_proc_val.activing_fan_retio_h)
             {
-//                rectangle(org_img, rectx, Scalar(0, 255, 0), 1);
                 erode(img, img, target_oc_element);
                 dilate(img, img, target_oc_element);
                 findContours(img, target_contours, target_hierachy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
@@ -85,18 +92,39 @@ void RuneMono::rune_mono_proc(Mat &in_img, Params params)
                     target_roi = minAreaRect(target_contours[contours_idx_2]);
                     target_area = (float)(target_roi.size.height * target_roi.size.width);
                     target_roi.points(target_rect_p);
-//                        cout << "target size: " << target_area << endl;
 
                     if ((target_area > 5000.0f) && (target_area < 20000.0f))
                     {
-                        //for (size_t i = 0; i < 4; i++)
-                        //{
-                        //	line(org_img, target_p[i], target_p[(i + 1) % 4], Scalar(0, 255, 255), 1);
-                        //}
-//                        circle(img, target.center, 8, Scalar(255, 0, 0), -1);
+                        if(params.robo_cmd.debug_flag)
+                        {
+                            for (size_t i = 0; i < 4; i++)
+                            {
+                                line(debug_img, target_rect_p[i], target_rect_p[(i + 1) % 4], Scalar(0, 255, 255), 1);
+                            }
+                            circle(debug_img, target_roi.center, 8, Scalar(255, 0, 0), -1);
+                        }
+                        target_info.X_offset = target_roi.center.x - frame_info.frame_mid_x;
+                        target_info.Y_offset = target_roi.center.y - frame_info.frame_mid_y;
+                        target_info.target_flag = true;
+                    }
+                    else
+                    {
+                        target_info.X_offset = 0;
+                        target_info.Y_offset = 0;
+                        target_info.target_flag = false;
                     }
                 }
             }
         }
+    }
+    if(params.robo_cmd.debug_flag)
+    {
+        cvNamedWindow("rune_debug_image", CV_WINDOW_AUTOSIZE);
+        imshow("rune_debug_image", debug_img);
+        waitKey(1);
+    }
+    else
+    {
+        destroyWindow("rune_debug_image");
     }
 }

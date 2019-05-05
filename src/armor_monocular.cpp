@@ -295,10 +295,10 @@ void ArmorMono::target_detect(void)
         last_distance = powf((last_center.x - armors.at(armor_idx).center.x), 2) + \
                         powf((last_center.y - armors.at(armor_idx).center.y), 2);
         last_distance = sqrtf(last_distance);
-        curr_trust_lev = 8.0 / last_distance + \
-                         5.0 * (CV_PI - armors.at(armor_idx).flat_angle) + \
-                         1.0 * armors.at(armor_idx).verical_length + \
-                         0.1 * armors.at(armor_idx).distance;
+        curr_trust_lev = (8.0 / last_distance) + \
+                         (5.0 * (CV_PI - armors.at(armor_idx).flat_angle)) + \
+                         (1.0 * armors.at(armor_idx).verical_length) + \
+                         (0.1 * armors.at(armor_idx).distance);
         if(curr_trust_lev > hightset_trust_lev)
         {
             final_target = armors.at(armor_idx);
@@ -403,7 +403,7 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
         }
         circle(debug_cam_img, final_target.center, 3, Scalar(255, 255,255), -1);
         // Show informations.
-        debug_fps = debug_fps + to_string(params.mono_cam_val.mono_cam_close_FPS);
+        debug_fps = debug_fps + to_string(params.mono_cam_val.mono_cam_far_FPS);
         putText(debug_cam_img, debug_fps, Point(0, 15), \
                 DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(255, 255, 0), 1.5);
         debug_proc_tim = debug_proc_tim + to_string(debug_proc_tim_val);
@@ -478,8 +478,12 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
         putText(debug_cam_img, debug_target_flag, Point(0, 470), \
                 DEBUG_IAMGE_TEXT_FONT, 0.4, Scalar(0, 255, 255), 1.5);
 
-        cvNamedWindow("debug_image", CV_WINDOW_AUTOSIZE);
-        imshow("debug_image", debug_cam_img);
+        cvNamedWindow("armor_debug_image", CV_WINDOW_AUTOSIZE);
+        imshow("armor_debug_image", debug_cam_img);
         waitKey(1);
+    }
+    else
+    {
+        destroyWindow("armor_debug_image");
     }
 }

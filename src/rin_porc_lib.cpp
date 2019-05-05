@@ -39,16 +39,21 @@ void ImgPorcCon::init(void)
         _params.robo_cmd.debug_flag = _rin_serial.robo_data.debug_flag;
         _params.robo_cmd.aim_or_rune = _rin_serial.robo_data.aim_or_rune;
         _params.robo_cmd.armor_type = _rin_serial.robo_data.armor_type;
-        _mono_cap.set_format(_params.mono_cam_val.mono_cam_far_resolution_x, \
-                             _params.mono_cam_val.mono_cam_far_resolution_y, 1);
-        _mono_cap.set_FPS(_params.mono_cam_val.mono_cam_far_FPS);
-        _mono_cap.start_stream();
+
         _armor_mono.frame_info.frame_reso_x = _params.mono_cam_val.mono_cam_far_resolution_x;
         _armor_mono.frame_info.frame_reso_y = _params.mono_cam_val.mono_cam_far_resolution_x;
         _armor_mono.frame_info.frame_mid_x = _params.mono_cam_val.mono_cam_far_middle_x;
         _armor_mono.frame_info.frame_mid_y = _params.mono_cam_val.mono_cam_far_middle_y;
+        _rune_mono.frame_info.frame_reso_x = _params.mono_cam_val.mono_cam_far_resolution_x;
+        _rune_mono.frame_info.frame_reso_y = _params.mono_cam_val.mono_cam_far_resolution_x;
+        _rune_mono.frame_info.frame_mid_x = _params.mono_cam_val.mono_cam_far_middle_x;
+        _rune_mono.frame_info.frame_mid_y = _params.mono_cam_val.mono_cam_far_middle_y;
+
     }
     // Hardware set and run.
+    _mono_cap.set_format(_params.mono_cam_val.mono_cam_far_resolution_x, \
+                         _params.mono_cam_val.mono_cam_far_resolution_y, 1);
+    _mono_cap.set_FPS(_params.mono_cam_val.mono_cam_far_FPS);
     _mono_cap.set_exposure_time(false, _params.mono_cam_val.mono_cam_exp_val_l);
     _mono_cap.start_stream();
 }
@@ -60,70 +65,54 @@ void ImgPorcCon::info_get(void)
 
 void ImgPorcCon::img_proc(void)
 {
-//    _rin_serial.msg_read();
-//    _params.robo_cmd.init_flag = _rin_serial.robo_data.init_flag;
-//    _params.robo_cmd.set_flag = _rin_serial.robo_data.set_flag;
-//    if((_params.robo_cmd.init_flag == false) &&
-//        (_params.robo_cmd.set_flag == true))
-//    {
-//        _params.robo_cmd.init_flag = false;
-//        _params.robo_cmd.set_flag = false;
-//        _params.robo_cmd.debug_flag = _rin_serial.robo_data.debug_flag;
-//        _params.robo_cmd.enemy_color = _rin_serial.robo_data.enemy_color;
-//        _params.robo_cmd.aim_or_rune = _rin_serial.robo_data.aim_or_rune;
-//        _params.robo_cmd.armor_type = _rin_serial.robo_data.armor_type;
-//    }
-//    if(_params.robo_cmd.debug_flag == true)
-//    {
-////        _params.param_read();
-////        _mono_cap.set_exposure_time(false, _params.mono_cam_val.mono_cam_exp_val_l);
-//    }
+    _rin_serial.msg_read();
+    _params.robo_cmd.init_flag = _rin_serial.robo_data.init_flag;
+    _params.robo_cmd.set_flag = _rin_serial.robo_data.set_flag;
+    if((_params.robo_cmd.init_flag == false) &&
+        (_params.robo_cmd.set_flag == true))
+    {
+        _params.robo_cmd.init_flag = false;
+        _params.robo_cmd.set_flag = false;
+        _params.robo_cmd.debug_flag = _rin_serial.robo_data.debug_flag;
+        _params.robo_cmd.enemy_color = _rin_serial.robo_data.enemy_color;
+        _params.robo_cmd.aim_or_rune = _rin_serial.robo_data.aim_or_rune;
+        _params.robo_cmd.armor_type = _rin_serial.robo_data.armor_type;
+    }
+    if(_params.robo_cmd.debug_flag == true)
+    {
+        _params.param_read();
+        _mono_cap.set_exposure_time(false, _params.mono_cam_val.mono_cam_exp_val_l);
+    }
 
-//    // Image process.
-//    if(_params.robo_cmd.aim_or_rune == RIN_AIM)
+    // Image process.
+    if(_params.robo_cmd.aim_or_rune == RIN_AIM)
         _armor_mono.armor_mono_proc(_mono_img, _params);
-//    else
-//        _rune_mono.rune_mono_proc(_mono_img, _params);
+    else
+        _rune_mono.rune_mono_proc(_mono_img, _params);
 }
 
 void ImgPorcCon::robo_cmd(void)
 {
-    // Kalman filter.
-//    Mat x_in, z;
-//    float speed[2];
-//    struct timeval tv1, tv2;
-//    struct timezone tz1, tz2;
-//    curr_offset[0] = _armor_mono.target_info.X_offset;
-//    curr_offset[1] = _armor_mono.target_info.Y_offset;
-//    gettimeofday(&tv1, &tz1);
-//    proc_tim = tv2.tv_sec * 1000 + tv2.tv_usec / 1000 - \
-//               tv1.tv_sec * 1000 - tv1.tv_usec / 1000;
-//    gettimeofday(&tv2, &tz2);
-//    speed[0] = (curr_offset[0] - last_offset[0]) / 10;
-//    speed[1] = (curr_offset[1] - last_offset[1]) / 10;
-//    x_in = (Mat_<float>(4, 1) << curr_offset[0], \
-//                                 curr_offset[1], \
-//                                 speed[0],       \
-//                                 speed[1]);
-//    z = (Mat_<float>(2, 1) << curr_offset[0], \
-//                              curr_offset[1]);
-//    _rin_KF.get_info(x_in, proc_tim);
-//    _rin_KF.prediction();
-//    _rin_KF.measurement_upt(z);
-//    last_offset[0] = curr_offset[0];
-//    last_offset[1] = curr_offset[1];
-    // Serial CMD.
-    _rin_serial._pc_data.X_offset = _armor_mono.target_info.X_offset;
-    _rin_serial._pc_data.Y_offset = _armor_mono.target_info.Y_offset;
-    _rin_serial._pc_data.Z_offset = _armor_mono.target_info.Z_offset;
-    if(_armor_mono.target_info.target_flag == true)
-        _rin_serial._pc_data.target_flag = 0xff;
+    if(_params.robo_cmd.aim_or_rune == RIN_AIM)
+    {
+        _rin_serial._pc_data.X_offset = _armor_mono.target_info.X_offset;
+        _rin_serial._pc_data.Y_offset = _armor_mono.target_info.Y_offset;
+        _rin_serial._pc_data.Z_offset = _armor_mono.target_info.Z_offset;
+        if(_armor_mono.target_info.target_flag == true)
+            _rin_serial._pc_data.target_flag = 0xff;
+        else
+            _rin_serial._pc_data.target_flag = 0x00;
+    }
     else
-        _rin_serial._pc_data.target_flag = 0x00;
-//    _rin_serial._pc_data.X_KF = (int16_t)_rin_KF._x_.at<float>(0);
-//    _rin_serial._pc_data.Y_KF = (int16_t)_rin_KF._x_.at<float>(1);
-//    _rin_serial._pc_data.X_speed = (int16_t)(_rin_KF._x_.at<float>(2) * 1000);
-//    _rin_serial._pc_data.Y_speed = (int16_t)(_rin_KF._x_.at<float>(3) * 1000);
+    {
+        _rin_serial._pc_data.X_offset = _rune_mono.target_info.X_offset;
+        _rin_serial._pc_data.Y_offset = _rune_mono.target_info.Y_offset;
+        _rin_serial._pc_data.Z_offset = 0;
+        if(_rune_mono.target_info.target_flag == true)
+            _rin_serial._pc_data.target_flag = 0xff;
+        else
+            _rin_serial._pc_data.target_flag = 0x00;
+    }
     _rin_serial.msg_send();
 }
 

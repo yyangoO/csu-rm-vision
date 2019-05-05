@@ -70,8 +70,8 @@ public:
         int target_oc_element_coresize;
         float actived_fan_pixel_l;
         float actived_fan_pixel_h;
-        float activing_fan_pixel_l;
-        float activing_fan_pixel_h;
+        float activing_fan_retio_l;
+        float activing_fan_retio_h;
         float target_fan_pixel_l;
         float target_fan_pixel_h;
     };

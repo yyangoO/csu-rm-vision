@@ -40,7 +40,7 @@ void RinSerial::serrial_cmd(void)
 {
     _serial_fd = open(DEVICE_PORT, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if(_serial_fd == -1)
-        return;
+         cout << "serial open failer" << endl;
     tcgetattr(_serial_fd, &_opt);
     cfmakeraw(&_opt);
     cfsetispeed(&_opt, SERIAL_BAUDRATE);
@@ -48,7 +48,7 @@ void RinSerial::serrial_cmd(void)
     tcsetattr(_serial_fd, TCSANOW, &_opt);
     tcflush(_serial_fd, TCIOFLUSH);
     if(_serial_fd == -1)
-        return;
+        cout << "serial set failer" << endl;
 }
 
 // Message send.
@@ -58,14 +58,6 @@ void RinSerial::msg_send(void)
     _pc_msg[1] = _pc_data.X_offset >> 8;
     _pc_msg[2] = _pc_data.Y_offset & 0xff;
     _pc_msg[3] = _pc_data.Y_offset >> 8;
-//    _pc_msg[4] = _pc_data.X_KF & 0xff;
-//    _pc_msg[5] = _pc_data.X_KF >> 8;
-//    _pc_msg[6] = _pc_data.Y_KF & 0xff;
-//    _pc_msg[7] = _pc_data.Y_KF >> 8;
-//    _pc_msg[8] = _pc_data.X_speed & 0xff;
-//    _pc_msg[9] = _pc_data.X_speed >> 8;
-//    _pc_msg[10] = _pc_data.Y_speed & 0xff;
-//    _pc_msg[11] = _pc_data.Y_speed >> 8;
     _pc_msg[4] = _pc_data.Z_offset & 0xff;
     _pc_msg[5] = _pc_data.Z_offset >> 8;
     _pc_msg[6] = _pc_data.target_flag;
@@ -81,15 +73,15 @@ void RinSerial::msg_send(void)
 void RinSerial::vision_init(void)
 {
     char buff[5];
-//    while(1)
-//    {
+    while(1)
+    {
         memset(buff, 0, 5);
-//        read(_serial_fd, buff, 5);
-//        if((buff[0] == rin_robo_fh[0]) && \
-//           (buff[1] == rin_robo_fh[1]) && \
-//           (buff[3] == rin_robo_ft[0]) && \
-//           (buff[4] == rin_robo_ft[1]))
-//        {
+        read(_serial_fd, buff, 5);
+        if((buff[0] == rin_robo_fh[0]) && \
+           (buff[1] == rin_robo_fh[1]) && \
+           (buff[3] == rin_robo_ft[0]) && \
+           (buff[4] == rin_robo_ft[1]))
+        {
             RinSerial::robo_data.init_flag = (buff[2] >> 7) & 0x01;
             RinSerial::robo_data.set_flag = (buff[2] >> 6) & 0x01;
             RinSerial::robo_data.debug_flag = (buff[2] >> 5) & 0x01;
@@ -97,16 +89,17 @@ void RinSerial::vision_init(void)
             RinSerial::robo_data.aim_or_rune = (buff[2] >> 3) & 0x01;
             RinSerial::robo_data.armor_type = (buff[2] >> 2) & 0x01;
 
-            RinSerial::robo_data.init_flag = 1;
-            RinSerial::robo_data.set_flag = 0;
-            RinSerial::robo_data.debug_flag = false;
-            RinSerial::robo_data.enemy_color = 1;
-            RinSerial::robo_data.aim_or_rune = RIN_AIM;
-            RinSerial::robo_data.armor_type = 0;
-//            }
-//            break;
-//        }
-//    }
+//            RinSerial::robo_data.init_flag = true;
+//            RinSerial::robo_data.set_flag = false;
+//            RinSerial::robo_data.debug_flag = true;
+//            RinSerial::robo_data.enemy_color = RIN_ENEMY_RED;
+//            RinSerial::robo_data.aim_or_rune = RIN_AIM;
+//            RinSerial::robo_data.armor_type = RIN_SMALL_ARMOR;
+            if((RinSerial::robo_data.init_flag == true) &&
+                (RinSerial::robo_data.set_flag == false))
+                break;
+        }
+    }
 }
 
 // Message read.
@@ -127,11 +120,11 @@ void RinSerial::msg_read(void)
         RinSerial::robo_data.aim_or_rune = (buff[2] >> 3) & 0x01;
         RinSerial::robo_data.armor_type = (buff[2] >> 2) & 0x01;
 
-        RinSerial::robo_data.init_flag = 0;
-//        RinSerial::robo_data.set_flag = 1;
-        RinSerial::robo_data.debug_flag = false;
-        RinSerial::robo_data.enemy_color = 1;
-//        RinSerial::robo_data.aim_or_rune = 0;
-        RinSerial::robo_data.armor_type = 0;
+//        RinSerial::robo_data.init_flag = false;
+//        RinSerial::robo_data.set_flag = false;
+//        RinSerial::robo_data.debug_flag = true;
+//        RinSerial::robo_data.enemy_color = RIN_ENEMY_RED;
+//        RinSerial::robo_data.aim_or_rune = RIN_AIM;
+//        RinSerial::robo_data.armor_type = RIN_SMALL_ARMOR;
     }
 }
