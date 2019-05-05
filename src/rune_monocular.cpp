@@ -87,6 +87,7 @@ void RuneMono::rune_mono_proc(Mat &in_img, Params params)
                 erode(img, img, target_oc_element);
                 dilate(img, img, target_oc_element);
                 findContours(img, target_contours, target_hierachy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+
                 for (size_t contours_idx_2 = 0; contours_idx_2 < target_contours.size(); contours_idx_2++)
                 {
                     target_roi = minAreaRect(target_contours[contours_idx_2]);
@@ -125,6 +126,6 @@ void RuneMono::rune_mono_proc(Mat &in_img, Params params)
     }
     else
     {
-        destroyWindow("rune_debug_image");
+        destroyAllWindows();
     }
 }

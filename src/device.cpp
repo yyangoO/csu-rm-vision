@@ -89,12 +89,6 @@ void RinSerial::vision_init(void)
             RinSerial::robo_data.aim_or_rune = (buff[2] >> 3) & 0x01;
             RinSerial::robo_data.armor_type = (buff[2] >> 2) & 0x01;
 
-//            RinSerial::robo_data.init_flag = true;
-//            RinSerial::robo_data.set_flag = false;
-//            RinSerial::robo_data.debug_flag = true;
-//            RinSerial::robo_data.enemy_color = RIN_ENEMY_RED;
-//            RinSerial::robo_data.aim_or_rune = RIN_AIM;
-//            RinSerial::robo_data.armor_type = RIN_SMALL_ARMOR;
             if((RinSerial::robo_data.init_flag == true) &&
                 (RinSerial::robo_data.set_flag == false))
                 break;
@@ -119,12 +113,5 @@ void RinSerial::msg_read(void)
         RinSerial::robo_data.enemy_color = (buff[2] >> 4) & 0x01;
         RinSerial::robo_data.aim_or_rune = (buff[2] >> 3) & 0x01;
         RinSerial::robo_data.armor_type = (buff[2] >> 2) & 0x01;
-
-//        RinSerial::robo_data.init_flag = false;
-//        RinSerial::robo_data.set_flag = false;
-//        RinSerial::robo_data.debug_flag = true;
-//        RinSerial::robo_data.enemy_color = RIN_ENEMY_RED;
-//        RinSerial::robo_data.aim_or_rune = RIN_AIM;
-//        RinSerial::robo_data.armor_type = RIN_SMALL_ARMOR;
     }
 }

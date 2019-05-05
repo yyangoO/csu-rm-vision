@@ -484,6 +484,6 @@ void ArmorMono::armor_mono_proc(Mat &in_img, Params params)
     }
     else
     {
-        destroyWindow("armor_debug_image");
+        destroyAllWindows();
     }
 }
