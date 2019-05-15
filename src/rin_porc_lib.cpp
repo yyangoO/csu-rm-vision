@@ -74,7 +74,7 @@ void ImgPorcCon::info_get(void)
     {
         _mono_cap >> _mono_img;
         gettimeofday(&tv, &tz);
-//        cout << tv.tv_usec << "image catching..." << endl;
+        cout << tv.tv_usec << "image catching..." << endl;
     }
     catch(exception e)
     {
@@ -189,8 +189,8 @@ void calibration_img_get(void)
     while(1)
     {
         mono_cap >> img;
-//        cvNamedWindow("calibration_image", CV_WINDOW_AUTOSIZE);
-//        imshow("calibration_image", img);
+        cvNamedWindow("calibration_image", CV_WINDOW_AUTOSIZE);
+        imshow("calibration_image", img);
         if(waitKey(1) != -1)
         {
             idx++;
